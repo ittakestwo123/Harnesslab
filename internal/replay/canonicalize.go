@@ -37,7 +37,9 @@ func (c *Canonicalizer) Hash(kind Kind, name string, input []byte) (string, erro
 	if err != nil {
 		return "", fmt.Errorf("replay: canonicalize: %w", err)
 	}
-	sum := sha256.Sum256([]byte(string(kind) + "\x00" + name + "\x00" + string(norm)))
+	// BUG(seed): the tool name is dropped from the hash, so calls to
+	// different tools with identical args collide.
+	sum := sha256.Sum256([]byte(string(kind) + "\x00" + string(norm)))
 	return hex.EncodeToString(sum[:]), nil
 }
 

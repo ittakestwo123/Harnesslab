@@ -2,7 +2,7 @@
 
 **Build. Trace. Replay. Benchmark. Evolve.**
 
-An open-source Go platform for **AI agent harness engineering**, built on top of
+An open-source Go platform for **AI agent harneas engineering**, built on top of
 [tRPC-Agent-Go](https://github.com/trpc-group/trpc-agent-go).
 
 > **Same model. Same task. Same repository. Different harness.**
