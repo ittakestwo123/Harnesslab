@@ -23,7 +23,7 @@ builds:
       - goos: windows
         goarch: arm64
     ldflags:
-      - -s -w -X github.com/ittakestwo123/Harnesslab/internal/cli.version={{.Version}}
+      - -s -w -X github.com/ittakestwo123/Harnesslab/internal/cli.version={{ trimprefix .Version "v" }}
 
 archives:
   - id: harness
