@@ -181,9 +181,11 @@ See [benchmarks/README.md](benchmarks/README.md).
 
 ## Status
 
-`v0.1.0-alpha.1` — the full loop **Build → Trace → Replay → Diff → Benchmark
+`v0.2.0-alpha` — the full loop **Build → Trace → Replay → Diff → Benchmark
 → Reproduce → Optimize** is implemented and verified end-to-end with a real
-DeepSeek model. See [CHANGELOG.md](CHANGELOG.md).
+DeepSeek model, with sandboxed execution, cost accounting, environment
+validation and a public 10-task benchmark. See [CHANGELOG.md](CHANGELOG.md)
+and the runnable demos in [docs/demo.md](docs/demo.md).
 
 ## Quick start
 

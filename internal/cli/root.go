@@ -23,12 +23,16 @@ func NewRootCmd() *cobra.Command {
 	root := &cobra.Command{
 		Use:          "harness",
 		Short:        "HarnessLab — build, trace, replay, benchmark and evolve AI agent harnesses",
-		Version:      "0.1.0",
+		Version:      version,
 		SilenceUsage: true,
 	}
 	root.AddCommand(newInitCmd(), newRunCmd(), newTraceCmd(), newRunsCmd(), newReplayCmd(), newDiffCmd(), newBenchCmd(), newSnapshotCmd(), newExportCmd(), newReproduceCmd(), newOptimizeCmd())
 	return root
 }
+
+// version is the CLI version. It can be overridden at build time with
+// -ldflags "-X github.com/ittakestwo123/Harnesslab/internal/cli.version=...".
+var version = "0.2.0-alpha"
 
 func newInitCmd() *cobra.Command {
 	var dir string

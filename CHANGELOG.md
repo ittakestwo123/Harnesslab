@@ -7,8 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.2.0-alpha] - 2026-08-16
+
+Trustworthy benchmark milestone: real success criteria, sandboxed execution,
+cost accounting, environment validation, and a public 10-task benchmark.
+
 ### Added
 
+- **Success criteria** in HarnessSpec: `success.require_verification_pass`
+  (default true) and `success.require_workspace_change` (default false) so
+  text-only hallucinated answers can no longer fake a PASS
+- Structured `VerificationResult` (per-command results, exit codes, clipped
+  output, best-effort test pass/fail counts) persisted on run records
+- **Sandbox** (`sandbox.type: none | process | docker | bwrap`) for agent
+  shell commands and verification:
+  - `process`: cwd isolation, secret env scrubbing, per-command timeouts,
+    command allow/deny lists
+  - `docker`: container execution with the workspace mounted at `/workspace`
+  - `bwrap`: bubblewrap sandbox on Linux
+  - Reliable whole-tree kills on Windows via job objects (KILL_ON_JOB_CLOSE)
+  - `sandbox.NewExecTool` — sandbox-routed `exec_command` tool used instead
+    of the host-exec toolset when a sandbox is configured
+- `tools.filesystem` group: framework file read/write/replace/search tools
+  scoped to the workspace, so coding agents can edit files cross-platform
 - **Cost model**: `pricing` section in HarnessSpec (provider → model →
   input/output per million USD, `*` wildcard supported); `Run.Metrics.CostUSD`
   is computed when pricing is configured and flows into reports
@@ -19,38 +40,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Public benchmark v1** (`benchmarks/`): 10 tasks against the seeded
   `bench/tasks-v1` commit of the HarnessLab repo — 4 implementation
   regressions (each caught by a failing test), 2 doc typos, 2 add-a-test,
-  2 add-a-feature — plus a base harness with pricing and a 2×2 variant
-  matrix
-- `tools.filesystem` group: framework file read/write/replace/search tools
-  scoped to the workspace, so coding agents can edit files cross-platform
+  2 add-a-feature — plus a base harness with pricing and a variant matrix
 - Benchmark `Matrix` gains a `tools_filesystem` dimension
 - Bench progress lines now show job errors
-
-### Fixed
-
-- Concurrent benchmark runs no longer race on the shared git mirror
-  (creation is guarded by a lock file; workers wait for the lock to release)
-
-- **Sandbox** (`sandbox.type: none | process | docker | bwrap`) for agent
-  shell commands and verification:
-  - `process`: cwd isolation, secret env scrubbing, per-command timeouts,
-    command allow/deny lists
-  - `docker`: container execution with the workspace mounted at `/workspace`
-  - `bwrap`: bubblewrap sandbox on Linux
-  - Reliable whole-tree kills on Windows via job objects (KILL_ON_JOB_CLOSE)
-  - `sandbox.NewExecTool` — sandbox-routed `exec_command` tool used instead
-    of the host-exec toolset when a sandbox is configured
-- `success` section in HarnessSpec: `require_verification_pass` (default true)
-  and `require_workspace_change` (default false) so text-only hallucinated
-  answers can no longer fake a PASS
-- Structured `VerificationResult` (per-command results, exit codes, clipped
-  output, best-effort test pass/fail counts) persisted on run records
 - `workspace.Diff.Untracked` — new files created by the agent now count as a
   workspace change (previously only `git diff` tracked changes)
 - Benchmark reports: `Ver` and `Chg` columns + per-run verification flags
 - Benchmark tasks can override the harness `success` criteria
 - Optimize: new `no_change` failure pattern ("repository task without
   workspace changes — likely hallucinated output")
+- CLI version is overridable via `-ldflags -X .../cli.version=...`
 
 ### Fixed
 
@@ -59,6 +58,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Commands now run through a temporary batch file, parsed exactly as typed.
 - Mojibake corruption of non-ASCII characters introduced during the module
   path rename (em-dashes, arrows, section signs restored).
+- Concurrent benchmark runs no longer race on the shared git mirror
+  (creation is guarded by a lock file; workers wait for the lock to release)
 
 ## [v0.1.0-alpha.1] - 2026-08-16
 
