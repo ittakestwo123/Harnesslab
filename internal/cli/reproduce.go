@@ -97,6 +97,7 @@ func newReproduceCmd() *cobra.Command {
 		storeDriver string
 		keepBundle  bool
 		quiet       bool
+		envMode     string
 	)
 	cmd := &cobra.Command{
 		Use:   "reproduce <run-id | bundle.harness>",
@@ -111,12 +112,13 @@ func newReproduceCmd() *cobra.Command {
 
 			arg := args[0]
 			var (
-				specYAML  string
-				task      string
-				repo      string
-				commit    string
-				replayID  string
-				bundleDir string
+				specYAML    string
+				task        string
+				repo        string
+				commit      string
+				replayID    string
+				bundleDir   string
+				recordedEnv string
 			)
 
 			if isBundle(arg) {
@@ -139,6 +141,9 @@ func newReproduceCmd() *cobra.Command {
 				bundleDir = tmp
 				task, repo, commit, replayID = m.Task, m.Repo, m.Commit, m.RunID
 				harnessDir = tmp
+				if data, err := os.ReadFile(filepath.Join(tmp, "environment.json")); err == nil {
+					recordedEnv = string(data)
+				}
 			} else {
 				st, err := openStore(harnessDir, storeDriver)
 				if err != nil {
@@ -149,6 +154,7 @@ func newReproduceCmd() *cobra.Command {
 					return fmt.Errorf("reproduce: run %s: %w", arg, err)
 				}
 				specYAML, task, repo, commit, replayID = run.SpecYAML, run.Task, run.Repository, run.Commit, run.ID
+				recordedEnv = run.Environment
 			}
 
 			// Resolve the harness spec: prefer the recorded one.
@@ -158,6 +164,10 @@ func newReproduceCmd() *cobra.Command {
 				if err != nil {
 					return fmt.Errorf("reproduce: no recorded spec and no harness.yaml: %w", err)
 				}
+			}
+
+			if err := checkEnvironment(recordedEnv, envMode); err != nil {
+				return err
 			}
 
 			fmt.Printf("Reproduce: %s\n", replayID)
@@ -197,7 +207,42 @@ func newReproduceCmd() *cobra.Command {
 	cmd.Flags().StringVar(&storeDriver, "store", "json", "run store backend: json or sqlite")
 	cmd.Flags().BoolVar(&keepBundle, "keep-bundle", false, "keep the extracted bundle directory")
 	cmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "only print the summary")
+	cmd.Flags().StringVar(&envMode, "env-mode", "warn", "environment drift handling: warn | strict | ignore")
 	return cmd
+}
+
+// checkEnvironment validates the recorded environment against the current
+// one according to envMode.
+func checkEnvironment(recordedEnv, mode string) error {
+	if mode == "ignore" {
+		return nil
+	}
+	recorded, err := reproduce.EnvFromJSON(recordedEnv)
+	if err != nil {
+		return fmt.Errorf("reproduce: recorded environment: %w", err)
+	}
+	current := reproduce.Capture()
+	diffs := reproduce.CompareEnv(recorded, current)
+	if len(diffs) == 0 {
+		return nil
+	}
+	mismatches := 0
+	fmt.Println("Environment check:")
+	for _, d := range diffs {
+		mark := "MATCH"
+		if !d.Match {
+			mark = "MISMATCH"
+			mismatches++
+		}
+		fmt.Printf("  %-14s %-8s recorded=%q current=%q\n", d.Key, mark, d.Recorded, d.Current)
+	}
+	if mismatches > 0 {
+		if reproduce.ParseEnvMode(mode) == reproduce.EnvStrict {
+			return fmt.Errorf("reproduce: environment drift detected (%d mismatches)", mismatches)
+		}
+		fmt.Printf("environment drift detected (%d mismatches)\n", mismatches)
+	}
+	return nil
 }
 
 func isBundle(arg string) bool {

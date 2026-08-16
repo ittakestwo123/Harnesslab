@@ -77,6 +77,9 @@ type Run struct {
 	WorkspacePatch string `json:"workspace_patch,omitempty"`
 	// Verification is the structured post-run verification outcome.
 	Verification VerificationResult `json:"verification,omitempty"`
+	// Environment is the JSON-encoded toolchain environment the run was
+	// produced with (used for strict env validation on reproduction).
+	Environment string `json:"environment,omitempty"`
 }
 
 // Store persists runs.
