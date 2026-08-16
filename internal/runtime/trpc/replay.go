@@ -35,9 +35,17 @@ func buildReplayToolCallbacks(cfg *hlruntime.ReplayConfig, canon *replay.Canonic
 			if err != nil {
 				return nil, nil
 			}
+			// Normalize absolute workspace paths out of the stored result so a
+			// later replay matches hashes regardless of the new workspace path
+			// (the replay runs in a fresh worktree). Without this, every model
+			// call that carries a prior tool result in its context would miss.
+			norm, err := canon.Normalize(out)
+			if err != nil {
+				return nil, nil
+			}
 			_ = cfg.Store.Put(ctx, replay.Entry{
 				Kind: replay.KindTool, InputHash: hash,
-				Input: args.Arguments, Output: out, CreatedAt: time.Now(),
+				Input: args.Arguments, Output: norm, CreatedAt: time.Now(),
 			})
 			return nil, nil
 		})

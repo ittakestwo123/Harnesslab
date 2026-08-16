@@ -54,10 +54,34 @@ func (c *Canonicalizer) normalizeValue(v any) any {
 		}
 		return t
 	case string:
+		if nested := c.normalizeNestedJSON(t); nested != "" {
+			return nested
+		}
 		return c.normalizeString(t)
 	default:
 		return v
 	}
+}
+
+// normalizeNestedJSON normalizes string values that are themselves JSON
+// documents (e.g. a tool result embedded as a message content string), so
+// workspace paths nested inside them are canonicalized too. It returns "" when
+// t does not look like a JSON object or array.
+func (c *Canonicalizer) normalizeNestedJSON(t string) string {
+	trimmed := strings.TrimSpace(t)
+	if !strings.HasPrefix(trimmed, "{") && !strings.HasPrefix(trimmed, "[") {
+		return ""
+	}
+	var v any
+	if err := json.Unmarshal([]byte(trimmed), &v); err != nil {
+		return ""
+	}
+	v = c.normalizeValue(v)
+	out, err := json.Marshal(v)
+	if err != nil {
+		return ""
+	}
+	return string(out)
 }
 
 func (c *Canonicalizer) normalizeString(s string) string {
