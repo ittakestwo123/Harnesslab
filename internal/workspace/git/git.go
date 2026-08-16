@@ -94,11 +94,27 @@ func (w *Workspace) ensureMirror(ctx context.Context, mirror, repo string) error
 	}
 	f.Close()
 	defer os.Remove(lock)
-	if err := w.git(ctx, "", "clone", "--mirror", repo, mirror); err != nil {
-		return fmt.Errorf("workspace: clone mirror %s: %w", repo, err)
+	// Clone with retries: transient network/proxy failures (e.g.
+	// SSL_ERROR_SYSCALL) must not fail the whole benchmark wave.
+	const maxAttempts = 3
+	var lastErr error
+	for attempt := 1; attempt <= maxAttempts; attempt++ {
+		_ = os.RemoveAll(mirror) // clear any partial clone from a failed attempt
+		if err := w.git(ctx, "", "clone", "--mirror", repo, mirror); err == nil {
+			log.Infof("workspace: mirror ready at %s", mirror)
+			return nil
+		} else {
+			lastErr = err
+			if attempt < maxAttempts {
+				select {
+				case <-time.After(time.Duration(attempt) * 3 * time.Second):
+				case <-ctx.Done():
+					return fmt.Errorf("workspace: clone mirror %s: %w", repo, ctx.Err())
+				}
+			}
+		}
 	}
-	log.Infof("workspace: mirror ready at %s", mirror)
-	return nil
+	return fmt.Errorf("workspace: clone mirror %s after %d attempts: %w", repo, maxAttempts, lastErr)
 }
 
 // mirrorValid reports whether mirror is a usable bare git repository.
