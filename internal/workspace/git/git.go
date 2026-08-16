@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"trpc.group/trpc-go/trpc-agent-go/log"
 
@@ -42,14 +43,8 @@ func (w *Workspace) Create(ctx context.Context, id string, s workspace.Spec) (*w
 	}
 
 	mirror := filepath.Join(w.rootDir, "mirror.git")
-	if _, err := os.Stat(mirror); os.IsNotExist(err) {
-		if err := os.MkdirAll(w.rootDir, 0o755); err != nil {
-			return nil, fmt.Errorf("workspace: mkdir %s: %w", w.rootDir, err)
-		}
-		if err := w.git(ctx, "", "clone", "--mirror", s.Repo, mirror); err != nil {
-			return nil, fmt.Errorf("workspace: clone mirror %s: %w", s.Repo, err)
-		}
-		log.Infof("workspace: mirror ready at %s", mirror)
+	if err := w.ensureMirror(ctx, mirror, s.Repo); err != nil {
+		return nil, err
 	}
 
 	wtDir := filepath.Join(w.rootDir, "worktrees", id)
@@ -62,6 +57,56 @@ func (w *Workspace) Create(ctx context.Context, id string, s workspace.Spec) (*w
 	}
 	inst.Root = wtDir
 	return inst, nil
+}
+
+// ensureMirror makes sure a valid bare mirror exists. Creation is guarded by
+// a lock file: the holder clones and only removes the lock when done, so
+// concurrent workers wait for the lock to disappear before using the mirror
+// (a clone-in-progress can look valid before all refs are fetched).
+func (w *Workspace) ensureMirror(ctx context.Context, mirror, repo string) error {
+	if w.mirrorValid(ctx, mirror) {
+		return nil
+	}
+	if err := os.MkdirAll(w.rootDir, 0o755); err != nil {
+		return fmt.Errorf("workspace: mkdir %s: %w", w.rootDir, err)
+	}
+	lock := mirror + ".lock"
+	f, err := os.OpenFile(lock, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0o644)
+	if err != nil {
+		// Another worker is cloning; wait until it releases the lock.
+		deadline := time.Now().Add(2 * time.Minute)
+		for {
+			if _, statErr := os.Stat(lock); os.IsNotExist(statErr) {
+				break
+			}
+			if ctx.Err() != nil {
+				return fmt.Errorf("workspace: wait for mirror: %w", ctx.Err())
+			}
+			if time.Now().After(deadline) {
+				return fmt.Errorf("workspace: timed out waiting for mirror %s", mirror)
+			}
+			time.Sleep(500 * time.Millisecond)
+		}
+		if w.mirrorValid(ctx, mirror) {
+			return nil
+		}
+		return fmt.Errorf("workspace: mirror %s missing after lock release", mirror)
+	}
+	f.Close()
+	defer os.Remove(lock)
+	if err := w.git(ctx, "", "clone", "--mirror", repo, mirror); err != nil {
+		return fmt.Errorf("workspace: clone mirror %s: %w", repo, err)
+	}
+	log.Infof("workspace: mirror ready at %s", mirror)
+	return nil
+}
+
+// mirrorValid reports whether mirror is a usable bare git repository.
+func (w *Workspace) mirrorValid(ctx context.Context, mirror string) bool {
+	if _, err := os.Stat(mirror); err != nil {
+		return false
+	}
+	return w.git(ctx, "", "--git-dir", mirror, "rev-parse", "--is-bare-repository") == nil
 }
 
 // Snapshot captures HEAD and the porcelain status of inst.

@@ -10,10 +10,11 @@ import (
 // against the base harness; the cartesian product produces one variant per
 // combination. Context/retry/memory dimensions can be added later.
 type Matrix struct {
-	Model        []string `yaml:"model"`
-	Planning     []string `yaml:"planning"`
-	Verification []string `yaml:"verification"`
-	ToolsShell   []bool   `yaml:"tools_shell"`
+	Model           []string `yaml:"model"`
+	Planning        []string `yaml:"planning"`
+	Verification    []string `yaml:"verification"`
+	ToolsShell      []bool   `yaml:"tools_shell"`
+	ToolsFilesystem []bool   `yaml:"tools_filesystem"`
 }
 
 // Variant is one harness variation of the base spec.
@@ -66,6 +67,14 @@ func (m *Matrix) Variants(base *spec.HarnessSpec) ([]Variant, error) {
 		for _, v := range m.ToolsShell {
 			v := v
 			c = append(c, choice{"tools_shell", fmt.Sprintf("%v", v), func(s *spec.HarnessSpec) { s.Tools.Shell = v }})
+		}
+		dims = append(dims, c)
+	}
+	if len(m.ToolsFilesystem) > 0 {
+		var c []choice
+		for _, v := range m.ToolsFilesystem {
+			v := v
+			c = append(c, choice{"tools_filesystem", fmt.Sprintf("%v", v), func(s *spec.HarnessSpec) { s.Tools.Filesystem = v }})
 		}
 		dims = append(dims, c)
 	}

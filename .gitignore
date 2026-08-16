@@ -9,6 +9,12 @@
 .smoketest/
 .wstest/
 .sqlitetest/
+# Benchmark runtime artifacts (produced when running the public taskset)
+benchmarks/store/
+benchmarks/traces/
+benchmarks/replay/
+benchmarks/workspaces/
+benchmarks/bench/
 
 # SQLite
 *.db

@@ -125,8 +125,12 @@ func newBenchCmd() *cobra.Command {
 					status = "error"
 				}
 				toks := o.Metrics.InputTokens + o.Metrics.OutputTokens
-				fmt.Printf("[%d/%d] task=%-14s variant=%-32s run=%-14s %-7s tokens=%d\n",
+				fmt.Printf("[%d/%d] task=%-14s variant=%-32s run=%-14s %-7s tokens=%d",
 					n, len(jobs), taskID, variant, o.RunID, status, toks)
+				if o.Error != nil {
+					fmt.Printf("  error=%v", o.Error)
+				}
+				fmt.Println()
 			})
 			if err != nil {
 				return err
