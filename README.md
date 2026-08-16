@@ -103,6 +103,34 @@ It records the full agent trajectory and makes it:
 - **Optimizable** — failure-pattern analysis and Pareto fronts
 - **Verifiable** — `success.require_verification_pass` + `success.require_workspace_change`
   stop text-only hallucinated answers from faking a PASS
+- **Sandboxable** — agent shell commands and verification run through a
+  configurable sandbox (`none` / `process` / `docker` / `bwrap`) with env
+  scrubbing, timeouts, and command allow/deny policies
+
+## Sandbox
+
+```yaml
+sandbox:
+  type: process        # none | process | docker | bwrap
+  timeout: 30s         # per-command timeout (process backend)
+  denied_commands:     # process backend: reject commands containing these
+    - "rm -rf"
+    - "format c:"
+  # allowed_commands:  # process backend: restrict to this prefix allowlist
+  #   - go
+  #   - echo
+```
+
+- `none` — direct host execution (default)
+- `process` — cwd isolation, **secret env scrubbing** (API keys/tokens are not
+  visible to sandboxed commands), per-command timeouts, allow/deny lists
+- `docker` — commands run inside a container with the workspace mounted at
+  `/workspace` (`sandbox.image`, network policy)
+- `bwrap` — bubblewrap sandbox on Linux (workspace rw, system dirs ro,
+  network disabled unless allowed)
+
+When a non-`none` sandbox is configured, the agent's `exec_command` tool and
+the verification commands both route through it.
 
 ## Status
 
@@ -185,8 +213,9 @@ HarnessSpec (harness.yaml)
 
 - Verification commands run in the workspace root when `--repo` is given,
   otherwise in the current directory.
-- The shell tool group uses the framework's host-exec toolset: it runs
-  commands **on the host** with no sandbox (see [SECURITY.md](SECURITY.md)).
+- The shell tool group uses the framework's host-exec toolset when no sandbox
+  is configured; with a non-`none` sandbox it uses a sandbox-routed
+  `exec_command` tool instead.
 - Replay hashes are computed over the full model request (messages + tool
   declarations + config); runs must be replayed with the same harness spec.
 - See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.

@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Sandbox** (`sandbox.type: none | process | docker | bwrap`) for agent
+  shell commands and verification:
+  - `process`: cwd isolation, secret env scrubbing, per-command timeouts,
+    command allow/deny lists
+  - `docker`: container execution with the workspace mounted at `/workspace`
+  - `bwrap`: bubblewrap sandbox on Linux
+  - Reliable whole-tree kills on Windows via job objects (KILL_ON_JOB_CLOSE)
+  - `sandbox.NewExecTool` — sandbox-routed `exec_command` tool used instead
+    of the host-exec toolset when a sandbox is configured
 - `success` section in HarnessSpec: `require_verification_pass` (default true)
   and `require_workspace_change` (default false) so text-only hallucinated
   answers can no longer fake a PASS
