@@ -1,0 +1,49 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Harness runtime data (local runs, traces, replay, workspaces)
+.harness/
+.realtest/
+.smoketest/
+.wstest/
+.sqlitetest/
+
+# SQLite
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Runtime artifacts
+*.jsonl
+*.harness
+bench-*.json
+
+# Binaries
+harness
+harness.exe
+*.exe
+
+# Build
+bin/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temp
+tmp/
+temp/

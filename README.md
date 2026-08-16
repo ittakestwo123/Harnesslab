@@ -1,0 +1,188 @@
+# HarnessLab
+
+**Build. Trace. Replay. Benchmark. Evolve.**
+
+An open-source Go platform for **AI agent harness engineering**, built on top of
+[tRPC-Agent-Go](https://github.com/trpc-group/trpc-agent-go).
+
+> **Same model. Same task. Same repository. Different harness.**
+>
+> HarnessLab makes the difference measurable: it turns the hard-coded parts of
+> a coding agent — prompt, context, planning, tools, verification, retry,
+> budget — into a configurable, observable, reproducible, comparable and
+> optimizable **harness**.
+
+[![CI](https://github.com/ittakestwo123/Harnesslab/actions/workflows/ci.yml/badge.svg)](https://github.com/ittakestwo123/Harnesslab/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
+
+---
+
+## Demo 1 — Offline Replay
+
+Replay a coding-agent run **without calling the model API**:
+
+```text
+Live Agent Run      2.6s      (real DeepSeek model + exec_command tool)
+Offline Replay      16ms
+External Model Calls  0
+External Tool Calls   0
+Tokens              6498/167  (identical to the live run)
+```
+
+```bash
+harness run --repo https://github.com/octocat/Hello-World.git "list the files"
+harness replay <run-id>          # offline, no API key needed
+```
+
+## Demo 2 — Harness Diff
+
+Same model, same task, same repository — different harness:
+
+```text
+Run A (with shell tool)          Run B (without tools)
+Tokens in    6,498               38
+Tool Calls   3                   0
+Model Calls  4                   1
+
+First divergence at step 1:
+  A: model ... (then executes ls / dir / type README)
+  B: model ... <function_results>  ← hallucinated a file listing
+```
+
+```bash
+harness diff <run-a> <run-b>
+```
+
+## Demo 3 — Benchmark
+
+```text
+Harness                          Pass  Tokens    Models  Tools  Time
+planning=none+tools_shell=false  2/2   104       2       0      1.18s
+planning=none+tools_shell=true   2/2   14,880    9       7      6.48s
+planning=todo+tools_shell=true   2/2   15,082    9       7      6.18s
+planning=todo+tools_shell=false  2/2   357       2       0      2.44s
+```
+
+```bash
+harness bench ./tasks --matrix matrix.yaml --parallel 2
+harness optimize --report .harness/bench/bench-<id>.json
+```
+
+---
+
+## What HarnessLab does
+
+HarnessLab is **not** another agent framework. It is a laboratory for the
+layer around the model — the **harness**:
+
+```text
+                     LLM
+                      │
+                      ▼
+           ┌─────────────────────┐
+           │       Harness       │   Context · Planning · Memory · Skills
+           │                     │   Tools · Retry · Verification · Sandbox
+           │                     │   Compaction · Policies · Budget
+           └──────────┬──────────┘
+                      ▼
+                  Repository
+```
+
+It records the full agent trajectory and makes it:
+
+- **Replayable** — offline replay from recorded tool/model results
+- **Comparable** — trajectory diff with first-divergence detection
+- **Benchmarkable** — task x harness-variant matrices on a worker pool
+- **Reproducible** — `.harness` bundles (spec + trace + replay store + env)
+- **Optimizable** — failure-pattern analysis and Pareto fronts
+
+## Status
+
+`v0.1.0-alpha.1` — the full loop **Build → Trace → Replay → Diff → Benchmark
+→ Reproduce → Optimize** is implemented and verified end-to-end with a real
+DeepSeek model. See [CHANGELOG.md](CHANGELOG.md).
+
+## Quick start
+
+```bash
+# 1. Build
+go build ./cmd/harness
+
+# 2. Configure your LLM
+export OPENAI_API_KEY=sk-...        # OpenAI-compatible
+export DEEPSEEK_API_KEY=sk-...      # or DeepSeek (spec: provider: deepseek)
+
+# 3. Initialize a harness
+harness init
+# -> .harness/harness.yaml  (edit it: model, tools, verification commands...)
+
+# 4. Run a task against a repository
+harness run --repo https://github.com/example/project "fix the failing parser tests"
+```
+
+Example output:
+
+```
+Run: run-8f3a2b1c
+Model       gpt-5 (openai)
+Harness     golang-coding-default
+Workspace   .harness/workspaces/worktrees/run-8f3a2b1c
+
+01:53:26  RUN START
+01:53:28  MODEL gpt-5
+01:53:31  TOOL exec_command {"cmd":"go test ./..."}
+01:53:33  TOOL exec_command done
+01:53:35  MODEL gpt-5 tokens 3812 -> 884
+01:53:36  RUN END
+
+Status      passed
+Tokens      3,812 in / 884 out
+Tool Calls  1
+Model Calls 2
+Duration    10.2s
+Trace:
+.harness/traces/run-8f3a2b1c.jsonl
+```
+
+## CLI reference
+
+| Command | Description |
+| --- | --- |
+| `harness init` | Generate a `.harness/` directory with a default `harness.yaml` |
+| `harness run "<task>"` | Run an agent with a harness, stream progress, verify, persist |
+| `harness trace <run-id>` | Render a run's trajectory |
+| `harness runs` | List recorded runs |
+| `harness replay <run-id>` | Offline replay from the recorded replay store |
+| `harness diff <run-a> <run-b>` | Metrics table + aligned trajectory + first divergence |
+| `harness bench <tasks>` | Benchmark tasks x harness variants (worker pool, budgets) |
+| `harness snapshot` | Write `.harness/harness.lock` for the current harness |
+| `harness export <run-id>` | Export a reproducible `.harness` bundle |
+| `harness reproduce <run-id\|bundle>` | Re-run offline from recorded spec + replay store |
+| `harness optimize` | Failure analysis, candidate changes, Pareto front |
+
+## Architecture
+
+```text
+HarnessSpec (harness.yaml)
+    → Harness Builder        (workspace + runtime + recorder + store)
+    → Runtime Interface      (runtime-agnostic)
+    → TRPC Runtime Adapter   (tRPC-Agent-Go runner, event normalization,
+                              model wrapper + tool callbacks for replay)
+    → HarnessEvent stream
+    → Trace (JSONL) / Run Store (JSON|SQLite) / Replay Store
+    → Diff / Benchmark / Reproduce / Optimize
+```
+
+## Development notes
+
+- Verification commands run in the workspace root when `--repo` is given,
+  otherwise in the current directory.
+- The shell tool group uses the framework's host-exec toolset: it runs
+  commands **on the host** with no sandbox (see [SECURITY.md](SECURITY.md)).
+- Replay hashes are computed over the full model request (messages + tool
+  declarations + config); runs must be replayed with the same harness spec.
+- See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.
+
+## License
+
+Apache-2.0. See [LICENSE](LICENSE).
