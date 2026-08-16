@@ -1,0 +1,18 @@
+id: t-reproduce-envmode
+category: testing
+set: dev
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Read internal/reproduce/envcheck.go first to learn the EnvMode constants and
+  the ParseEnvMode function. Then add a unit test named TestParseEnvModeKnown
+  to internal/reproduce/envcheck_test.go that asserts ParseEnvMode("warn"),
+  ParseEnvMode("strict") and ParseEnvMode("ignore") return the corresponding
+  mode constants and that an unknown string falls back to the default mode.
+  Use the file tools to edit the test file. The test must be named exactly
+  TestParseEnvModeKnown and must pass.
+verification:
+  strategy: final
+  commands:
+    - findstr "func TestParseEnvModeKnown" internal\reproduce\envcheck_test.go
+    - go test ./internal/reproduce/...

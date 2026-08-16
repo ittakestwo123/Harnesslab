@@ -1,0 +1,17 @@
+id: r-reproduce-envfield
+category: refactor
+set: dev
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Rename the Go field `GoVersion` of the Environment struct in
+  internal/reproduce/lock.go to `GoLangVersion` and update every reference to
+  it in the package (Capture and any comparison code). Keep the json and yaml
+  struct tags exactly as they are (still "go_version") so serialized data
+  stays compatible. Do not modify test files. Use the file tools. All tests in
+  ./internal/reproduce/... must still pass.
+verification:
+  strategy: final
+  commands:
+    - findstr "GoLangVersion" internal\reproduce\lock.go
+    - go test ./internal/reproduce/...

@@ -2,19 +2,47 @@ package benchmark
 
 import (
 	"fmt"
+	"path/filepath"
+	"strings"
 
 	"github.com/ittakestwo123/Harnesslab/internal/harness/spec"
 )
 
 // Matrix declares harness variations. Each non-empty dimension is varied
 // against the base harness; the cartesian product produces one variant per
-// combination. Context/retry/memory dimensions can be added later.
+// combination. Alternatively the Harness dimension lists full harness.yaml
+// files (used by the ablation matrix), which are loaded as-is.
 type Matrix struct {
 	Model           []string `yaml:"model"`
 	Planning        []string `yaml:"planning"`
 	Verification    []string `yaml:"verification"`
 	ToolsShell      []bool   `yaml:"tools_shell"`
 	ToolsFilesystem []bool   `yaml:"tools_filesystem"`
+	// Harness lists full harness.yaml files (paths relative to the matrix
+	// file). When non-empty it takes precedence over the dimensions.
+	Harness []string `yaml:"harness"`
+}
+
+// HarnessVariants loads each harness file as one variant, named by its base
+// name (e.g. "h1-planner"). baseDir resolves relative paths.
+func (m *Matrix) HarnessVariants(baseDir string) ([]Variant, error) {
+	var variants []Variant
+	for _, f := range m.Harness {
+		p := f
+		if !filepath.IsAbs(p) {
+			p = filepath.Join(baseDir, f)
+		}
+		s, err := spec.Load(p)
+		if err != nil {
+			return nil, fmt.Errorf("matrix: harness %s: %w", f, err)
+		}
+		name := strings.TrimSuffix(filepath.Base(f), filepath.Ext(f))
+		variants = append(variants, Variant{Name: name, Spec: s})
+	}
+	if len(variants) == 0 {
+		return nil, fmt.Errorf("matrix: harness dimension is empty")
+	}
+	return variants, nil
 }
 
 // Variant is one harness variation of the base spec.

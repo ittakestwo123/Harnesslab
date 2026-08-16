@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.3.0-alpha] - 2026-08-16
+
+Benchmark v3 milestone: a larger, categorized, statistically rigorous public
+benchmark plus open-source UX (templates, binary releases).
+
+### Added
+
+- **Task taxonomy**: benchmark tasks carry `category` (basic, debugging,
+  multi-file, refactor, testing, concurrency, context-heavy, tool-heavy) and
+  `set` (dev, holdout); task loading recurses into category directories
+- **Dev / holdout split**: `benchmarks/tasksets/dev.yaml` + `holdout.yaml`;
+  `harness bench --set dev|holdout` and `--taskset <file>` select subsets so
+  the future optimizer optimizes on dev and validates on holdout
+- **Repeated runs**: `harness bench --repeat N` produces N independent run
+  records per task × harness (never overwritten)
+- **Statistical reports**: per-variant and per-task mean, median, stddev,
+  P50, P90 and a 95% confidence interval of the mean for tokens, cost and
+  latency; raw per-run data (incl. CostUSD) preserved in the JSON report
+- **Harness ablation matrix**: `benchmarks/harnesses/h0-baseline..h6-full`
+  add planner, verification, retry, repo-map context and skills one at a
+  time; `benchmarks/matrices/harness-ablation.yaml` runs all seven
+- **Adaptive context**: `context.strategy: none | repo-map` injects an
+  auto-generated repository structure summary into the agent instruction
+- **Skills**: `skills.enabled` + `skills.list` inject named working
+  procedures as instruction sections (extension point for tool-backed skills)
+- **Benchmark v3 taskset**: 30+ real coding tasks across 8 categories against
+  the `bench/tasks-v2` seed (`075550a`)
+- **Open source UX**: issue templates (bug report / feature request / config),
+  pull request template, GoReleaser binary releases (linux/darwin amd64+arm64,
+  windows amd64) via a tag-triggered release workflow
+
+### Fixed
+
+- Run metrics now carry the real `CostUSD` (previously 0 in reports because
+  `finish()` stamped the record but not the returned metrics copy)
+- Benchmark task verification no longer clobbers a harness that deliberately
+  disables verification (ablation baseline H0)
+
 ## [v0.2.0-alpha] - 2026-08-16
 
 Trustworthy benchmark milestone: real success criteria, sandboxed execution,

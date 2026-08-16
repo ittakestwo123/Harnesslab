@@ -1,0 +1,20 @@
+id: concurrency-benchmark-limiter
+category: concurrency
+set: dev
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Add a concurrency limiter to the internal/benchmark package. Create a new
+  file internal/benchmark/limiter.go implementing type Limiter struct with
+  NewLimiter(max int) *Limiter, (*Limiter).Acquire() and (*Limiter).Release().
+  Back it with a buffered channel so at most max acquires can be outstanding
+  and Acquire blocks while the limiter is full. Then add test
+  TestLimiterConcurrent to a new file internal/benchmark/limiter_test.go that
+  starts 50 goroutines, each acquiring and releasing 20 times (join them with
+  a sync.WaitGroup); the test must complete without deadlocking. Use the file
+  tools to create both files.
+verification:
+  strategy: final
+  commands:
+    - findstr "func NewLimiter" internal\benchmark\limiter.go
+    - go test ./internal/benchmark/...

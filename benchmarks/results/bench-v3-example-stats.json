@@ -1,0 +1,2618 @@
+{
+  "id": "bench-6559b275",
+  "started_at": "2026-08-16T23:15:04.7748648+08:00",
+  "finished_at": "2026-08-16T23:18:42.7341321+08:00",
+  "variants": [
+    {
+      "variant": "h0-baseline",
+      "total": 8,
+      "passed": 8,
+      "failed": 0,
+      "errored": 0,
+      "input_tokens": 115031,
+      "output_tokens": 3421,
+      "model_calls": 33,
+      "tool_calls": 29,
+      "duration_ms": 79292,
+      "cost_usd": 0.03482147,
+      "verification_passed": 8,
+      "workspace_changed": 8,
+      "stats": {
+        "input_tokens": {
+          "count": 8,
+          "mean": 14378.875,
+          "median": 13367,
+          "stddev": 4244.583,
+          "p50": 13367,
+          "p90": 18529,
+          "ci95_lo": 11437.529,
+          "ci95_hi": 17320.221
+        },
+        "output_tokens": {
+          "count": 8,
+          "mean": 427.625,
+          "median": 410,
+          "stddev": 201.333,
+          "p50": 410,
+          "p90": 713,
+          "ci95_lo": 288.109,
+          "ci95_hi": 567.141
+        },
+        "cost_usd": {
+          "count": 8,
+          "mean": 0.004,
+          "median": 0.004,
+          "stddev": 0.001,
+          "p50": 0.004,
+          "p90": 0.006,
+          "ci95_lo": 0.003,
+          "ci95_hi": 0.005
+        },
+        "latency_ms": {
+          "count": 8,
+          "mean": 9911.5,
+          "median": 5352,
+          "stddev": 10188.829,
+          "p50": 5352,
+          "p90": 26426,
+          "ci95_lo": 2851.001,
+          "ci95_hi": 16971.999
+        }
+      },
+      "by_task": [
+        {
+          "task_id": "concurrency-cost-counter",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 18219.5,
+              "median": 18219,
+              "stddev": 0.707,
+              "p50": 18219,
+              "p90": 18220,
+              "ci95_lo": 18218.52,
+              "ci95_hi": 18220.48
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.006,
+              "median": 0.006,
+              "stddev": 0,
+              "p50": 0.006,
+              "p90": 0.006,
+              "ci95_lo": 0.006,
+              "ci95_hi": 0.006
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 26327,
+              "median": 26228,
+              "stddev": 140.007,
+              "p50": 26228,
+              "p90": 26426,
+              "ci95_lo": 26132.96,
+              "ci95_hi": 26521.04
+            }
+          }
+        },
+        {
+          "task_id": "fix-readme-typo",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 17571,
+              "median": 16613,
+              "stddev": 1354.817,
+              "p50": 16613,
+              "p90": 18529,
+              "ci95_lo": 15693.32,
+              "ci95_hi": 19448.68
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.005,
+              "median": 0.005,
+              "stddev": 0,
+              "p50": 0.005,
+              "p90": 0.006,
+              "ci95_lo": 0.005,
+              "ci95_hi": 0.006
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 4978.5,
+              "median": 4450,
+              "stddev": 747.412,
+              "p50": 4450,
+              "p90": 5507,
+              "ci95_lo": 3942.64,
+              "ci95_hi": 6014.36
+            }
+          }
+        },
+        {
+          "task_id": "t-cost-wildcard",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 13359.5,
+              "median": 13352,
+              "stddev": 10.607,
+              "p50": 13352,
+              "p90": 13367,
+              "ci95_lo": 13344.8,
+              "ci95_hi": 13374.2
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.004,
+              "median": 0.004,
+              "stddev": 0,
+              "p50": 0.004,
+              "p90": 0.004,
+              "ci95_lo": 0.004,
+              "ci95_hi": 0.004
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 5440.5,
+              "median": 5352,
+              "stddev": 125.158,
+              "p50": 5352,
+              "p90": 5529,
+              "ci95_lo": 5267.04,
+              "ci95_hi": 5613.96
+            }
+          }
+        },
+        {
+          "task_id": "tool-git-find-seed",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 8365.5,
+              "median": 8364,
+              "stddev": 2.121,
+              "p50": 8364,
+              "p90": 8367,
+              "ci95_lo": 8362.56,
+              "ci95_hi": 8368.44
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.002,
+              "median": 0.002,
+              "stddev": 0,
+              "p50": 0.002,
+              "p90": 0.002,
+              "ci95_lo": 0.002,
+              "ci95_hi": 0.002
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 2900,
+              "median": 2597,
+              "stddev": 428.507,
+              "p50": 2597,
+              "p90": 3203,
+              "ci95_lo": 2306.12,
+              "ci95_hi": 3493.88
+            }
+          }
+        }
+      ],
+      "runs": [
+        {
+          "run_id": "run-400f7950",
+          "task_id": "concurrency-cost-counter",
+          "variant": "h0-baseline",
+          "status": "passed",
+          "tokens": 18933,
+          "input_tokens": 18220,
+          "output_tokens": 713,
+          "model_calls": 5,
+          "tool_calls": 6,
+          "duration_ms": 26228,
+          "cost_usd": 0.0057037,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-34aa1ba6",
+          "task_id": "concurrency-cost-counter",
+          "variant": "h0-baseline",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 18910,
+          "input_tokens": 18219,
+          "output_tokens": 691,
+          "model_calls": 5,
+          "tool_calls": 6,
+          "duration_ms": 26426,
+          "cost_usd": 0.00567923,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-242b9ca8",
+          "task_id": "fix-readme-typo",
+          "variant": "h0-baseline",
+          "status": "passed",
+          "tokens": 16962,
+          "input_tokens": 16613,
+          "output_tokens": 349,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 4450,
+          "cost_usd": 0.00486941,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-e634385b",
+          "task_id": "fix-readme-typo",
+          "variant": "h0-baseline",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 19016,
+          "input_tokens": 18529,
+          "output_tokens": 487,
+          "model_calls": 5,
+          "tool_calls": 4,
+          "duration_ms": 5507,
+          "cost_usd": 0.005538530000000001,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-5c273bec",
+          "task_id": "t-cost-wildcard",
+          "variant": "h0-baseline",
+          "status": "passed",
+          "tokens": 13762,
+          "input_tokens": 13352,
+          "output_tokens": 410,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 5529,
+          "cost_usd": 0.00405604,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-5d09c4b0",
+          "task_id": "t-cost-wildcard",
+          "variant": "h0-baseline",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 13778,
+          "input_tokens": 13367,
+          "output_tokens": 411,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 5352,
+          "cost_usd": 0.004061190000000001,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-4cf09770",
+          "task_id": "tool-git-find-seed",
+          "variant": "h0-baseline",
+          "status": "passed",
+          "tokens": 8549,
+          "input_tokens": 8367,
+          "output_tokens": 182,
+          "model_calls": 3,
+          "tool_calls": 2,
+          "duration_ms": 3203,
+          "cost_usd": 0.0024592900000000003,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-780f0b34",
+          "task_id": "tool-git-find-seed",
+          "variant": "h0-baseline",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 8542,
+          "input_tokens": 8364,
+          "output_tokens": 178,
+          "model_calls": 3,
+          "tool_calls": 2,
+          "duration_ms": 2597,
+          "cost_usd": 0.00245408,
+          "verification_passed": true,
+          "workspace_changed": true
+        }
+      ]
+    },
+    {
+      "variant": "h1-planner",
+      "total": 8,
+      "passed": 8,
+      "failed": 0,
+      "errored": 0,
+      "input_tokens": 110099,
+      "output_tokens": 3513,
+      "model_calls": 34,
+      "tool_calls": 28,
+      "duration_ms": 47622,
+      "cost_usd": 0.03359103,
+      "verification_passed": 8,
+      "workspace_changed": 8,
+      "stats": {
+        "input_tokens": {
+          "count": 8,
+          "mean": 13762.375,
+          "median": 13408,
+          "stddev": 4377.809,
+          "p50": 13408,
+          "p90": 20203,
+          "ci95_lo": 10728.708,
+          "ci95_hi": 16796.042
+        },
+        "output_tokens": {
+          "count": 8,
+          "mean": 439.125,
+          "median": 409,
+          "stddev": 217.577,
+          "p50": 409,
+          "p90": 809,
+          "ci95_lo": 288.352,
+          "ci95_hi": 589.898
+        },
+        "cost_usd": {
+          "count": 8,
+          "mean": 0.004,
+          "median": 0.004,
+          "stddev": 0.001,
+          "p50": 0.004,
+          "p90": 0.006,
+          "ci95_lo": 0.003,
+          "ci95_hi": 0.005
+        },
+        "latency_ms": {
+          "count": 8,
+          "mean": 5952.75,
+          "median": 5317,
+          "stddev": 3165.062,
+          "p50": 5317,
+          "p90": 10938,
+          "ci95_lo": 3759.474,
+          "ci95_hi": 8146.026
+        }
+      },
+      "by_task": [
+        {
+          "task_id": "concurrency-cost-counter",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 18194,
+              "median": 16185,
+              "stddev": 2841.155,
+              "p50": 16185,
+              "p90": 20203,
+              "ci95_lo": 14256.36,
+              "ci95_hi": 22131.64
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.006,
+              "median": 0.005,
+              "stddev": 0.001,
+              "p50": 0.005,
+              "p90": 0.006,
+              "ci95_lo": 0.005,
+              "ci95_hi": 0.007
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 10667,
+              "median": 10396,
+              "stddev": 383.252,
+              "p50": 10396,
+              "p90": 10938,
+              "ci95_lo": 10135.84,
+              "ci95_hi": 11198.16
+            }
+          }
+        },
+        {
+          "task_id": "fix-readme-typo",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 15007,
+              "median": 11349,
+              "stddev": 5173.193,
+              "p50": 11349,
+              "p90": 18665,
+              "ci95_lo": 7837.32,
+              "ci95_hi": 22176.68
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.005,
+              "median": 0.003,
+              "stddev": 0.001,
+              "p50": 0.003,
+              "p90": 0.006,
+              "ci95_lo": 0.002,
+              "ci95_hi": 0.007
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 4452.5,
+              "median": 3588,
+              "stddev": 1222.588,
+              "p50": 3588,
+              "p90": 5317,
+              "ci95_lo": 2758.08,
+              "ci95_hi": 6146.92
+            }
+          }
+        },
+        {
+          "task_id": "t-cost-wildcard",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 13410.5,
+              "median": 13408,
+              "stddev": 3.536,
+              "p50": 13408,
+              "p90": 13413,
+              "ci95_lo": 13405.6,
+              "ci95_hi": 13415.4
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.004,
+              "median": 0.004,
+              "stddev": 0,
+              "p50": 0.004,
+              "p90": 0.004,
+              "ci95_lo": 0.004,
+              "ci95_hi": 0.004
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 5855,
+              "median": 5792,
+              "stddev": 89.095,
+              "p50": 5792,
+              "p90": 5918,
+              "ci95_lo": 5731.52,
+              "ci95_hi": 5978.48
+            }
+          }
+        },
+        {
+          "task_id": "tool-git-find-seed",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 8438,
+              "median": 8437,
+              "stddev": 1.414,
+              "p50": 8437,
+              "p90": 8439,
+              "ci95_lo": 8436.04,
+              "ci95_hi": 8439.96
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.002,
+              "median": 0.002,
+              "stddev": 0,
+              "p50": 0.002,
+              "p90": 0.002,
+              "ci95_lo": 0.002,
+              "ci95_hi": 0.002
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 2836.5,
+              "median": 2633,
+              "stddev": 287.792,
+              "p50": 2633,
+              "p90": 3040,
+              "ci95_lo": 2437.64,
+              "ci95_hi": 3235.36
+            }
+          }
+        }
+      ],
+      "runs": [
+        {
+          "run_id": "run-4e146546",
+          "task_id": "concurrency-cost-counter",
+          "variant": "h1-planner",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 16859,
+          "input_tokens": 16185,
+          "output_tokens": 674,
+          "model_calls": 5,
+          "tool_calls": 5,
+          "duration_ms": 10396,
+          "cost_usd": 0.005111350000000001,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-33909a69",
+          "task_id": "concurrency-cost-counter",
+          "variant": "h1-planner",
+          "status": "passed",
+          "tokens": 21012,
+          "input_tokens": 20203,
+          "output_tokens": 809,
+          "model_calls": 6,
+          "tool_calls": 6,
+          "duration_ms": 10938,
+          "cost_usd": 0.00634471,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-5d7482fb",
+          "task_id": "fix-readme-typo",
+          "variant": "h1-planner",
+          "status": "passed",
+          "tokens": 11703,
+          "input_tokens": 11349,
+          "output_tokens": 354,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 3588,
+          "cost_usd": 0.00345363,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-94c07a7a",
+          "task_id": "fix-readme-typo",
+          "variant": "h1-planner",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 19151,
+          "input_tokens": 18665,
+          "output_tokens": 486,
+          "model_calls": 5,
+          "tool_calls": 4,
+          "duration_ms": 5317,
+          "cost_usd": 0.00557415,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-d041c289",
+          "task_id": "t-cost-wildcard",
+          "variant": "h1-planner",
+          "status": "passed",
+          "tokens": 13817,
+          "input_tokens": 13408,
+          "output_tokens": 409,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 5918,
+          "cost_usd": 0.00407006,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-d6116ab8",
+          "task_id": "t-cost-wildcard",
+          "variant": "h1-planner",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 13822,
+          "input_tokens": 13413,
+          "output_tokens": 409,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 5792,
+          "cost_usd": 0.00407141,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-7e3fbfec",
+          "task_id": "tool-git-find-seed",
+          "variant": "h1-planner",
+          "status": "passed",
+          "tokens": 8625,
+          "input_tokens": 8439,
+          "output_tokens": 186,
+          "model_calls": 3,
+          "tool_calls": 2,
+          "duration_ms": 3040,
+          "cost_usd": 0.0024831300000000005,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-849116f6",
+          "task_id": "tool-git-find-seed",
+          "variant": "h1-planner",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 8623,
+          "input_tokens": 8437,
+          "output_tokens": 186,
+          "model_calls": 3,
+          "tool_calls": 2,
+          "duration_ms": 2633,
+          "cost_usd": 0.0024825900000000002,
+          "verification_passed": true,
+          "workspace_changed": true
+        }
+      ]
+    },
+    {
+      "variant": "h2-verification",
+      "total": 8,
+      "passed": 8,
+      "failed": 0,
+      "errored": 0,
+      "input_tokens": 119485,
+      "output_tokens": 3402,
+      "model_calls": 35,
+      "tool_calls": 32,
+      "duration_ms": 46289,
+      "cost_usd": 0.03600315,
+      "verification_passed": 8,
+      "workspace_changed": 8,
+      "stats": {
+        "input_tokens": {
+          "count": 8,
+          "mean": 14935.625,
+          "median": 13585,
+          "stddev": 3228.934,
+          "p50": 13585,
+          "p90": 21666,
+          "ci95_lo": 12698.088,
+          "ci95_hi": 17173.162
+        },
+        "output_tokens": {
+          "count": 8,
+          "mean": 425.25,
+          "median": 322,
+          "stddev": 202.079,
+          "p50": 322,
+          "p90": 771,
+          "ci95_lo": 285.216,
+          "ci95_hi": 565.284
+        },
+        "cost_usd": {
+          "count": 8,
+          "mean": 0.005,
+          "median": 0.004,
+          "stddev": 0.001,
+          "p50": 0.004,
+          "p90": 0.007,
+          "ci95_lo": 0.004,
+          "ci95_hi": 0.005
+        },
+        "latency_ms": {
+          "count": 8,
+          "mean": 5786.125,
+          "median": 4792,
+          "stddev": 1863.352,
+          "p50": 4792,
+          "p90": 9211,
+          "ci95_lo": 4494.888,
+          "ci95_hi": 7077.362
+        }
+      },
+      "by_task": [
+        {
+          "task_id": "concurrency-cost-counter",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 18562.5,
+              "median": 15459,
+              "stddev": 4389.012,
+              "p50": 15459,
+              "p90": 21666,
+              "ci95_lo": 12479.64,
+              "ci95_hi": 24645.36
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.006,
+              "median": 0.005,
+              "stddev": 0.001,
+              "p50": 0.005,
+              "p90": 0.007,
+              "ci95_lo": 0.004,
+              "ci95_hi": 0.008
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 8616,
+              "median": 8021,
+              "stddev": 841.457,
+              "p50": 8021,
+              "p90": 9211,
+              "ci95_lo": 7449.8,
+              "ci95_hi": 9782.2
+            }
+          }
+        },
+        {
+          "task_id": "fix-readme-typo",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 15955,
+              "median": 15953,
+              "stddev": 2.828,
+              "p50": 15953,
+              "p90": 15957,
+              "ci95_lo": 15951.08,
+              "ci95_hi": 15958.92
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.005,
+              "median": 0.005,
+              "stddev": 0,
+              "p50": 0.005,
+              "p90": 0.005,
+              "ci95_lo": 0.005,
+              "ci95_hi": 0.005
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 4249,
+              "median": 4063,
+              "stddev": 263.044,
+              "p50": 4063,
+              "p90": 4435,
+              "ci95_lo": 3884.44,
+              "ci95_hi": 4613.56
+            }
+          }
+        },
+        {
+          "task_id": "t-cost-wildcard",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 13580,
+              "median": 13575,
+              "stddev": 7.071,
+              "p50": 13575,
+              "p90": 13585,
+              "ci95_lo": 13570.2,
+              "ci95_hi": 13589.8
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.004,
+              "median": 0.004,
+              "stddev": 0,
+              "p50": 0.004,
+              "p90": 0.004,
+              "ci95_lo": 0.004,
+              "ci95_hi": 0.004
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 5654,
+              "median": 5632,
+              "stddev": 31.113,
+              "p50": 5632,
+              "p90": 5676,
+              "ci95_lo": 5610.88,
+              "ci95_hi": 5697.12
+            }
+          }
+        },
+        {
+          "task_id": "tool-git-find-seed",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 11645,
+              "median": 11639,
+              "stddev": 8.485,
+              "p50": 11639,
+              "p90": 11651,
+              "ci95_lo": 11633.24,
+              "ci95_hi": 11656.76
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.003,
+              "median": 0.003,
+              "stddev": 0,
+              "p50": 0.003,
+              "p90": 0.003,
+              "ci95_lo": 0.003,
+              "ci95_hi": 0.003
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 4625.5,
+              "median": 4459,
+              "stddev": 235.467,
+              "p50": 4459,
+              "p90": 4792,
+              "ci95_lo": 4299.16,
+              "ci95_hi": 4951.84
+            }
+          }
+        }
+      ],
+      "runs": [
+        {
+          "run_id": "run-c8826178",
+          "task_id": "concurrency-cost-counter",
+          "variant": "h2-verification",
+          "status": "passed",
+          "tokens": 16177,
+          "input_tokens": 15459,
+          "output_tokens": 718,
+          "model_calls": 5,
+          "tool_calls": 6,
+          "duration_ms": 8021,
+          "cost_usd": 0.00496373,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-e21975e0",
+          "task_id": "concurrency-cost-counter",
+          "variant": "h2-verification",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 22437,
+          "input_tokens": 21666,
+          "output_tokens": 771,
+          "model_calls": 6,
+          "tool_calls": 8,
+          "duration_ms": 9211,
+          "cost_usd": 0.0066979200000000004,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-dd822bb3",
+          "task_id": "fix-readme-typo",
+          "variant": "h2-verification",
+          "status": "passed",
+          "tokens": 16279,
+          "input_tokens": 15957,
+          "output_tokens": 322,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 4063,
+          "cost_usd": 0.0046625899999999994,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-5ad6e512",
+          "task_id": "fix-readme-typo",
+          "variant": "h2-verification",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 16268,
+          "input_tokens": 15953,
+          "output_tokens": 315,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 4435,
+          "cost_usd": 0.0046538099999999995,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-548c761b",
+          "task_id": "t-cost-wildcard",
+          "variant": "h2-verification",
+          "status": "passed",
+          "tokens": 13953,
+          "input_tokens": 13575,
+          "output_tokens": 378,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 5632,
+          "cost_usd": 0.00408105,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-8a9be5ad",
+          "task_id": "t-cost-wildcard",
+          "variant": "h2-verification",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 13957,
+          "input_tokens": 13585,
+          "output_tokens": 372,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 5676,
+          "cost_usd": 0.00407715,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-4238bbc1",
+          "task_id": "tool-git-find-seed",
+          "variant": "h2-verification",
+          "status": "passed",
+          "tokens": 11920,
+          "input_tokens": 11651,
+          "output_tokens": 269,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 4459,
+          "cost_usd": 0.00344167,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-40b904ba",
+          "task_id": "tool-git-find-seed",
+          "variant": "h2-verification",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 11896,
+          "input_tokens": 11639,
+          "output_tokens": 257,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 4792,
+          "cost_usd": 0.00342523,
+          "verification_passed": true,
+          "workspace_changed": true
+        }
+      ]
+    },
+    {
+      "variant": "h3-retry",
+      "total": 8,
+      "passed": 8,
+      "failed": 0,
+      "errored": 0,
+      "input_tokens": 109201,
+      "output_tokens": 3269,
+      "model_calls": 34,
+      "tool_calls": 31,
+      "duration_ms": 44125,
+      "cost_usd": 0.033080170000000006,
+      "verification_passed": 8,
+      "workspace_changed": 8,
+      "stats": {
+        "input_tokens": {
+          "count": 8,
+          "mean": 13650.125,
+          "median": 13585,
+          "stddev": 1782.91,
+          "p50": 13585,
+          "p90": 15968,
+          "ci95_lo": 12414.632,
+          "ci95_hi": 14885.618
+        },
+        "output_tokens": {
+          "count": 8,
+          "mean": 408.625,
+          "median": 315,
+          "stddev": 176.041,
+          "p50": 315,
+          "p90": 684,
+          "ci95_lo": 286.635,
+          "ci95_hi": 530.615
+        },
+        "cost_usd": {
+          "count": 8,
+          "mean": 0.004,
+          "median": 0.004,
+          "stddev": 0.001,
+          "p50": 0.004,
+          "p90": 0.005,
+          "ci95_lo": 0.004,
+          "ci95_hi": 0.005
+        },
+        "latency_ms": {
+          "count": 8,
+          "mean": 5515.625,
+          "median": 4534,
+          "stddev": 1766.707,
+          "p50": 4534,
+          "p90": 8333,
+          "ci95_lo": 4291.36,
+          "ci95_hi": 6739.89
+        }
+      },
+      "by_task": [
+        {
+          "task_id": "concurrency-cost-counter",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 15394.5,
+              "median": 15391,
+              "stddev": 4.95,
+              "p50": 15391,
+              "p90": 15398,
+              "ci95_lo": 15387.64,
+              "ci95_hi": 15401.36
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.005,
+              "median": 0.005,
+              "stddev": 0,
+              "p50": 0.005,
+              "p90": 0.005,
+              "ci95_lo": 0.005,
+              "ci95_hi": 0.005
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 8162,
+              "median": 7991,
+              "stddev": 241.831,
+              "p50": 7991,
+              "p90": 8333,
+              "ci95_lo": 7826.84,
+              "ci95_hi": 8497.16
+            }
+          }
+        },
+        {
+          "task_id": "fix-readme-typo",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 13946,
+              "median": 11924,
+              "stddev": 2859.54,
+              "p50": 11924,
+              "p90": 15968,
+              "ci95_lo": 9982.88,
+              "ci95_hi": 17909.12
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.004,
+              "median": 0.004,
+              "stddev": 0.001,
+              "p50": 0.004,
+              "p90": 0.005,
+              "ci95_lo": 0.003,
+              "ci95_hi": 0.005
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 4034.5,
+              "median": 3754,
+              "stddev": 396.687,
+              "p50": 3754,
+              "p90": 4315,
+              "ci95_lo": 3484.72,
+              "ci95_hi": 4584.28
+            }
+          }
+        },
+        {
+          "task_id": "t-cost-wildcard",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 13585,
+              "median": 13585,
+              "stddev": 0,
+              "p50": 13585,
+              "p90": 13585,
+              "ci95_lo": 13585,
+              "ci95_hi": 13585
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.004,
+              "median": 0.004,
+              "stddev": 0,
+              "p50": 0.004,
+              "p90": 0.004,
+              "ci95_lo": 0.004,
+              "ci95_hi": 0.004
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 5546.5,
+              "median": 5170,
+              "stddev": 532.451,
+              "p50": 5170,
+              "p90": 5923,
+              "ci95_lo": 4808.56,
+              "ci95_hi": 6284.44
+            }
+          }
+        },
+        {
+          "task_id": "tool-git-find-seed",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 11675,
+              "median": 11637,
+              "stddev": 53.74,
+              "p50": 11637,
+              "p90": 11713,
+              "ci95_lo": 11600.52,
+              "ci95_hi": 11749.48
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.003,
+              "median": 0.003,
+              "stddev": 0,
+              "p50": 0.003,
+              "p90": 0.004,
+              "ci95_lo": 0.003,
+              "ci95_hi": 0.004
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 4319.5,
+              "median": 4105,
+              "stddev": 303.349,
+              "p50": 4105,
+              "p90": 4534,
+              "ci95_lo": 3899.08,
+              "ci95_hi": 4739.92
+            }
+          }
+        }
+      ],
+      "runs": [
+        {
+          "run_id": "run-ff400058",
+          "task_id": "concurrency-cost-counter",
+          "variant": "h3-retry",
+          "status": "passed",
+          "tokens": 16075,
+          "input_tokens": 15391,
+          "output_tokens": 684,
+          "model_calls": 5,
+          "tool_calls": 6,
+          "duration_ms": 8333,
+          "cost_usd": 0.00490797,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-2291060b",
+          "task_id": "concurrency-cost-counter",
+          "variant": "h3-retry",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 16082,
+          "input_tokens": 15398,
+          "output_tokens": 684,
+          "model_calls": 5,
+          "tool_calls": 6,
+          "duration_ms": 7991,
+          "cost_usd": 0.00490986,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-8bdeb9c6",
+          "task_id": "fix-readme-typo",
+          "variant": "h3-retry",
+          "status": "passed",
+          "tokens": 16278,
+          "input_tokens": 15968,
+          "output_tokens": 310,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 4315,
+          "cost_usd": 0.00465236,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-7b5e633b",
+          "task_id": "fix-readme-typo",
+          "variant": "h3-retry",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 12203,
+          "input_tokens": 11924,
+          "output_tokens": 279,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 3754,
+          "cost_usd": 0.0035263800000000004,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-8a148e0d",
+          "task_id": "t-cost-wildcard",
+          "variant": "h3-retry",
+          "status": "passed",
+          "tokens": 13963,
+          "input_tokens": 13585,
+          "output_tokens": 378,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 5170,
+          "cost_usd": 0.004083750000000001,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-50e9e94b",
+          "task_id": "t-cost-wildcard",
+          "variant": "h3-retry",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 13963,
+          "input_tokens": 13585,
+          "output_tokens": 378,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 5923,
+          "cost_usd": 0.004083750000000001,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-665ec376",
+          "task_id": "tool-git-find-seed",
+          "variant": "h3-retry",
+          "status": "passed",
+          "tokens": 11878,
+          "input_tokens": 11637,
+          "output_tokens": 241,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 4105,
+          "cost_usd": 0.00340709,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-a0f59fd0",
+          "task_id": "tool-git-find-seed",
+          "variant": "h3-retry",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 12028,
+          "input_tokens": 11713,
+          "output_tokens": 315,
+          "model_calls": 4,
+          "tool_calls": 4,
+          "duration_ms": 4534,
+          "cost_usd": 0.00350901,
+          "verification_passed": true,
+          "workspace_changed": true
+        }
+      ]
+    },
+    {
+      "variant": "h4-context",
+      "total": 8,
+      "passed": 8,
+      "failed": 0,
+      "errored": 0,
+      "input_tokens": 222930,
+      "output_tokens": 5723,
+      "model_calls": 43,
+      "tool_calls": 39,
+      "duration_ms": 66440,
+      "cost_usd": 0.0664864,
+      "verification_passed": 8,
+      "workspace_changed": 8,
+      "stats": {
+        "input_tokens": {
+          "count": 8,
+          "mean": 27866.25,
+          "median": 15888,
+          "stddev": 31404.429,
+          "p50": 15888,
+          "p90": 105060,
+          "ci95_lo": 6104.091,
+          "ci95_hi": 49628.409
+        },
+        "output_tokens": {
+          "count": 8,
+          "mean": 715.375,
+          "median": 454,
+          "stddev": 822.97,
+          "p50": 454,
+          "p90": 2732,
+          "ci95_lo": 145.086,
+          "ci95_hi": 1285.664
+        },
+        "cost_usd": {
+          "count": 8,
+          "mean": 0.008,
+          "median": 0.005,
+          "stddev": 0.009,
+          "p50": 0.005,
+          "p90": 0.031,
+          "ci95_lo": 0.002,
+          "ci95_hi": 0.015
+        },
+        "latency_ms": {
+          "count": 8,
+          "mean": 8305,
+          "median": 5639,
+          "stddev": 8158.627,
+          "p50": 5639,
+          "p90": 28445,
+          "ci95_lo": 2651.36,
+          "ci95_hi": 13958.64
+        }
+      },
+      "by_task": [
+        {
+          "task_id": "concurrency-cost-counter",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 12403.5,
+              "median": 12379,
+              "stddev": 34.648,
+              "p50": 12379,
+              "p90": 12428,
+              "ci95_lo": 12355.48,
+              "ci95_hi": 12451.52
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.004,
+              "median": 0.004,
+              "stddev": 0,
+              "p50": 0.004,
+              "p90": 0.004,
+              "ci95_lo": 0.004,
+              "ci95_hi": 0.004
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 5959,
+              "median": 5850,
+              "stddev": 154.149,
+              "p50": 5850,
+              "p90": 6068,
+              "ci95_lo": 5745.36,
+              "ci95_hi": 6172.64
+            }
+          }
+        },
+        {
+          "task_id": "fix-readme-typo",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 64252,
+              "median": 23444,
+              "stddev": 57711.227,
+              "p50": 23444,
+              "p90": 105060,
+              "ci95_lo": -15731.68,
+              "ci95_hi": 144235.68
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.019,
+              "median": 0.007,
+              "stddev": 0.017,
+              "p50": 0.007,
+              "p90": 0.031,
+              "ci95_lo": -0.005,
+              "ci95_hi": 0.043
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 17136,
+              "median": 5827,
+              "stddev": 15993.341,
+              "p50": 5827,
+              "p90": 28445,
+              "ci95_lo": -5029.64,
+              "ci95_hi": 39301.64
+            }
+          }
+        },
+        {
+          "task_id": "t-cost-wildcard",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 18927,
+              "median": 18915,
+              "stddev": 16.971,
+              "p50": 18915,
+              "p90": 18939,
+              "ci95_lo": 18903.48,
+              "ci95_hi": 18950.52
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.006,
+              "median": 0.006,
+              "stddev": 0,
+              "p50": 0.006,
+              "p90": 0.006,
+              "ci95_lo": 0.006,
+              "ci95_hi": 0.006
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 5584.5,
+              "median": 5530,
+              "stddev": 77.075,
+              "p50": 5530,
+              "p90": 5639,
+              "ci95_lo": 5477.68,
+              "ci95_hi": 5691.32
+            }
+          }
+        },
+        {
+          "task_id": "tool-git-find-seed",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 15882.5,
+              "median": 15877,
+              "stddev": 7.778,
+              "p50": 15877,
+              "p90": 15888,
+              "ci95_lo": 15871.72,
+              "ci95_hi": 15893.28
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.005,
+              "median": 0.005,
+              "stddev": 0,
+              "p50": 0.005,
+              "p90": 0.005,
+              "ci95_lo": 0.005,
+              "ci95_hi": 0.005
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 4540.5,
+              "median": 4539,
+              "stddev": 2.121,
+              "p50": 4539,
+              "p90": 4542,
+              "ci95_lo": 4537.56,
+              "ci95_hi": 4543.44
+            }
+          }
+        }
+      ],
+      "runs": [
+        {
+          "run_id": "run-d4176428",
+          "task_id": "concurrency-cost-counter",
+          "variant": "h4-context",
+          "status": "passed",
+          "tokens": 13020,
+          "input_tokens": 12428,
+          "output_tokens": 592,
+          "model_calls": 3,
+          "tool_calls": 3,
+          "duration_ms": 5850,
+          "cost_usd": 0.00400676,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-449611eb",
+          "task_id": "concurrency-cost-counter",
+          "variant": "h4-context",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 12917,
+          "input_tokens": 12379,
+          "output_tokens": 538,
+          "model_calls": 3,
+          "tool_calls": 3,
+          "duration_ms": 6068,
+          "cost_usd": 0.00393413,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-473d3d4a",
+          "task_id": "fix-readme-typo",
+          "variant": "h4-context",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 23905,
+          "input_tokens": 23444,
+          "output_tokens": 461,
+          "model_calls": 5,
+          "tool_calls": 4,
+          "duration_ms": 5827,
+          "cost_usd": 0.00683698,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-2eb41f9f",
+          "task_id": "fix-readme-typo",
+          "variant": "h4-context",
+          "status": "passed",
+          "tokens": 107792,
+          "input_tokens": 105060,
+          "output_tokens": 2732,
+          "model_calls": 16,
+          "tool_calls": 15,
+          "duration_ms": 28445,
+          "cost_usd": 0.0313714,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-4c3f74f6",
+          "task_id": "t-cost-wildcard",
+          "variant": "h4-context",
+          "status": "passed",
+          "tokens": 19352,
+          "input_tokens": 18939,
+          "output_tokens": 413,
+          "model_calls": 4,
+          "tool_calls": 4,
+          "duration_ms": 5639,
+          "cost_usd": 0.005567830000000001,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-8969adcb",
+          "task_id": "t-cost-wildcard",
+          "variant": "h4-context",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 19369,
+          "input_tokens": 18915,
+          "output_tokens": 454,
+          "model_calls": 4,
+          "tool_calls": 4,
+          "duration_ms": 5530,
+          "cost_usd": 0.005606450000000001,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-e1e0a41e",
+          "task_id": "tool-git-find-seed",
+          "variant": "h4-context",
+          "status": "passed",
+          "tokens": 16160,
+          "input_tokens": 15888,
+          "output_tokens": 272,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 4542,
+          "cost_usd": 0.0045889600000000004,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-70753b4c",
+          "task_id": "tool-git-find-seed",
+          "variant": "h4-context",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 16138,
+          "input_tokens": 15877,
+          "output_tokens": 261,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 4539,
+          "cost_usd": 0.00457389,
+          "verification_passed": true,
+          "workspace_changed": true
+        }
+      ]
+    },
+    {
+      "variant": "h5-skills",
+      "total": 8,
+      "passed": 8,
+      "failed": 0,
+      "errored": 0,
+      "input_tokens": 113984,
+      "output_tokens": 3388,
+      "model_calls": 34,
+      "tool_calls": 30,
+      "duration_ms": 46023,
+      "cost_usd": 0.03450248,
+      "verification_passed": 8,
+      "workspace_changed": 8,
+      "stats": {
+        "input_tokens": {
+          "count": 8,
+          "mean": 14248,
+          "median": 13794,
+          "stddev": 1705.524,
+          "p50": 13794,
+          "p90": 16182,
+          "ci95_lo": 13066.132,
+          "ci95_hi": 15429.868
+        },
+        "output_tokens": {
+          "count": 8,
+          "mean": 423.5,
+          "median": 308,
+          "stddev": 205.581,
+          "p50": 308,
+          "p90": 754,
+          "ci95_lo": 281.039,
+          "ci95_hi": 565.961
+        },
+        "cost_usd": {
+          "count": 8,
+          "mean": 0.004,
+          "median": 0.004,
+          "stddev": 0.001,
+          "p50": 0.004,
+          "p90": 0.005,
+          "ci95_lo": 0.004,
+          "ci95_hi": 0.005
+        },
+        "latency_ms": {
+          "count": 8,
+          "mean": 5752.875,
+          "median": 5590,
+          "stddev": 1342.668,
+          "p50": 5590,
+          "p90": 7561,
+          "ci95_lo": 4822.454,
+          "ci95_hi": 6683.296
+        }
+      },
+      "by_task": [
+        {
+          "task_id": "concurrency-cost-counter",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 15730,
+              "median": 15700,
+              "stddev": 42.426,
+              "p50": 15700,
+              "p90": 15760,
+              "ci95_lo": 15671.2,
+              "ci95_hi": 15788.8
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.005,
+              "median": 0.005,
+              "stddev": 0,
+              "p50": 0.005,
+              "p90": 0.005,
+              "ci95_lo": 0.005,
+              "ci95_hi": 0.005
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 7461.5,
+              "median": 7362,
+              "stddev": 140.714,
+              "p50": 7362,
+              "p90": 7561,
+              "ci95_lo": 7266.48,
+              "ci95_hi": 7656.52
+            }
+          }
+        },
+        {
+          "task_id": "fix-readme-typo",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 15593,
+              "median": 15004,
+              "stddev": 832.972,
+              "p50": 15004,
+              "p90": 16182,
+              "ci95_lo": 14438.56,
+              "ci95_hi": 16747.44
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.005,
+              "median": 0.004,
+              "stddev": 0,
+              "p50": 0.004,
+              "p90": 0.005,
+              "ci95_lo": 0.004,
+              "ci95_hi": 0.005
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 5118,
+              "median": 4512,
+              "stddev": 857.013,
+              "p50": 4512,
+              "p90": 5724,
+              "ci95_lo": 3930.24,
+              "ci95_hi": 6305.76
+            }
+          }
+        },
+        {
+          "task_id": "t-cost-wildcard",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 13791.5,
+              "median": 13789,
+              "stddev": 3.536,
+              "p50": 13789,
+              "p90": 13794,
+              "ci95_lo": 13786.6,
+              "ci95_hi": 13796.4
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.004,
+              "median": 0.004,
+              "stddev": 0,
+              "p50": 0.004,
+              "p90": 0.004,
+              "ci95_lo": 0.004,
+              "ci95_hi": 0.004
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 6116,
+              "median": 5590,
+              "stddev": 743.876,
+              "p50": 5590,
+              "p90": 6642,
+              "ci95_lo": 5085.04,
+              "ci95_hi": 7146.96
+            }
+          }
+        },
+        {
+          "task_id": "tool-git-find-seed",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 11877.5,
+              "median": 11877,
+              "stddev": 0.707,
+              "p50": 11877,
+              "p90": 11878,
+              "ci95_lo": 11876.52,
+              "ci95_hi": 11878.48
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.004,
+              "median": 0.004,
+              "stddev": 0,
+              "p50": 0.004,
+              "p90": 0.004,
+              "ci95_lo": 0.003,
+              "ci95_hi": 0.004
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 4316,
+              "median": 3946,
+              "stddev": 523.259,
+              "p50": 3946,
+              "p90": 4686,
+              "ci95_lo": 3590.8,
+              "ci95_hi": 5041.2
+            }
+          }
+        }
+      ],
+      "runs": [
+        {
+          "run_id": "run-6b003b1e",
+          "task_id": "concurrency-cost-counter",
+          "variant": "h5-skills",
+          "status": "passed",
+          "tokens": 16514,
+          "input_tokens": 15760,
+          "output_tokens": 754,
+          "model_calls": 5,
+          "tool_calls": 6,
+          "duration_ms": 7561,
+          "cost_usd": 0.0050846,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-3d51c9cb",
+          "task_id": "concurrency-cost-counter",
+          "variant": "h5-skills",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 16447,
+          "input_tokens": 15700,
+          "output_tokens": 747,
+          "model_calls": 5,
+          "tool_calls": 6,
+          "duration_ms": 7362,
+          "cost_usd": 0.0050607,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-2f27a1bf",
+          "task_id": "fix-readme-typo",
+          "variant": "h5-skills",
+          "status": "passed",
+          "tokens": 16482,
+          "input_tokens": 16182,
+          "output_tokens": 300,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 5724,
+          "cost_usd": 0.004699139999999999,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-efe0dc5c",
+          "task_id": "fix-readme-typo",
+          "variant": "h5-skills",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 15312,
+          "input_tokens": 15004,
+          "output_tokens": 308,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 4512,
+          "cost_usd": 0.0043898800000000005,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-284497ab",
+          "task_id": "t-cost-wildcard",
+          "variant": "h5-skills",
+          "status": "passed",
+          "tokens": 14166,
+          "input_tokens": 13794,
+          "output_tokens": 372,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 5590,
+          "cost_usd": 0.00413358,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-be199836",
+          "task_id": "t-cost-wildcard",
+          "variant": "h5-skills",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 14158,
+          "input_tokens": 13789,
+          "output_tokens": 369,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 6642,
+          "cost_usd": 0.00412893,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-03309c23",
+          "task_id": "tool-git-find-seed",
+          "variant": "h5-skills",
+          "status": "passed",
+          "tokens": 12144,
+          "input_tokens": 11877,
+          "output_tokens": 267,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 4686,
+          "cost_usd": 0.00350049,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-be7df943",
+          "task_id": "tool-git-find-seed",
+          "variant": "h5-skills",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 12149,
+          "input_tokens": 11878,
+          "output_tokens": 271,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 3946,
+          "cost_usd": 0.0035051600000000002,
+          "verification_passed": true,
+          "workspace_changed": true
+        }
+      ]
+    },
+    {
+      "variant": "h6-full",
+      "total": 8,
+      "passed": 8,
+      "failed": 0,
+      "errored": 0,
+      "input_tokens": 128999,
+      "output_tokens": 3161,
+      "model_calls": 30,
+      "tool_calls": 27,
+      "duration_ms": 39637,
+      "cost_usd": 0.03830683000000001,
+      "verification_passed": 8,
+      "workspace_changed": 8,
+      "stats": {
+        "input_tokens": {
+          "count": 8,
+          "mean": 16124.875,
+          "median": 16279,
+          "stddev": 2538.979,
+          "p50": 16279,
+          "p90": 19235,
+          "ci95_lo": 14365.452,
+          "ci95_hi": 17884.298
+        },
+        "output_tokens": {
+          "count": 8,
+          "mean": 395.125,
+          "median": 322,
+          "stddev": 115.806,
+          "p50": 322,
+          "p90": 535,
+          "ci95_lo": 314.876,
+          "ci95_hi": 475.374
+        },
+        "cost_usd": {
+          "count": 8,
+          "mean": 0.005,
+          "median": 0.005,
+          "stddev": 0.001,
+          "p50": 0.005,
+          "p90": 0.006,
+          "ci95_lo": 0.004,
+          "ci95_hi": 0.005
+        },
+        "latency_ms": {
+          "count": 8,
+          "mean": 4954.625,
+          "median": 4181,
+          "stddev": 1032.515,
+          "p50": 4181,
+          "p90": 6313,
+          "ci95_lo": 4239.129,
+          "ci95_hi": 5670.121
+        }
+      },
+      "by_task": [
+        {
+          "task_id": "concurrency-cost-counter",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 12553,
+              "median": 12553,
+              "stddev": 0,
+              "p50": 12553,
+              "p90": 12553,
+              "ci95_lo": 12553,
+              "ci95_hi": 12553
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.004,
+              "median": 0.004,
+              "stddev": 0,
+              "p50": 0.004,
+              "p90": 0.004,
+              "ci95_lo": 0.004,
+              "ci95_hi": 0.004
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 5565.5,
+              "median": 5350,
+              "stddev": 304.763,
+              "p50": 5350,
+              "p90": 5781,
+              "ci95_lo": 5143.12,
+              "ci95_hi": 5987.88
+            }
+          }
+        },
+        {
+          "task_id": "fix-readme-typo",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 16464.5,
+              "median": 16462,
+              "stddev": 3.536,
+              "p50": 16462,
+              "p90": 16467,
+              "ci95_lo": 16459.6,
+              "ci95_hi": 16469.4
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.005,
+              "median": 0.005,
+              "stddev": 0,
+              "p50": 0.005,
+              "p90": 0.005,
+              "ci95_lo": 0.005,
+              "ci95_hi": 0.005
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 4115,
+              "median": 4049,
+              "stddev": 93.338,
+              "p50": 4049,
+              "p90": 4181,
+              "ci95_lo": 3985.64,
+              "ci95_hi": 4244.36
+            }
+          }
+        },
+        {
+          "task_id": "t-cost-wildcard",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 19235,
+              "median": 19235,
+              "stddev": 0,
+              "p50": 19235,
+              "p90": 19235,
+              "ci95_lo": 19235,
+              "ci95_hi": 19235
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.006,
+              "median": 0.006,
+              "stddev": 0,
+              "p50": 0.006,
+              "p90": 0.006,
+              "ci95_lo": 0.006,
+              "ci95_hi": 0.006
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 6198.5,
+              "median": 6084,
+              "stddev": 161.927,
+              "p50": 6084,
+              "p90": 6313,
+              "ci95_lo": 5974.08,
+              "ci95_hi": 6422.92
+            }
+          }
+        },
+        {
+          "task_id": "tool-git-find-seed",
+          "passed": 2,
+          "total": 2,
+          "stats": {
+            "input_tokens": {
+              "count": 2,
+              "mean": 16247,
+              "median": 16215,
+              "stddev": 45.255,
+              "p50": 16215,
+              "p90": 16279,
+              "ci95_lo": 16184.28,
+              "ci95_hi": 16309.72
+            },
+            "output_tokens": {
+              "count": 0,
+              "mean": 0,
+              "median": 0,
+              "stddev": 0,
+              "p50": 0,
+              "p90": 0,
+              "ci95_lo": 0,
+              "ci95_hi": 0
+            },
+            "cost_usd": {
+              "count": 2,
+              "mean": 0.005,
+              "median": 0.005,
+              "stddev": 0,
+              "p50": 0.005,
+              "p90": 0.005,
+              "ci95_lo": 0.005,
+              "ci95_hi": 0.005
+            },
+            "latency_ms": {
+              "count": 2,
+              "mean": 3939.5,
+              "median": 3832,
+              "stddev": 152.028,
+              "p50": 3832,
+              "p90": 4047,
+              "ci95_lo": 3728.8,
+              "ci95_hi": 4150.2
+            }
+          }
+        }
+      ],
+      "runs": [
+        {
+          "run_id": "run-bcc2cc3d",
+          "task_id": "concurrency-cost-counter",
+          "variant": "h6-full",
+          "status": "passed",
+          "tokens": 13088,
+          "input_tokens": 12553,
+          "output_tokens": 535,
+          "model_calls": 3,
+          "tool_calls": 3,
+          "duration_ms": 5350,
+          "cost_usd": 0.00397781,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-d0f8bb08",
+          "task_id": "concurrency-cost-counter",
+          "variant": "h6-full",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 13086,
+          "input_tokens": 12553,
+          "output_tokens": 533,
+          "model_calls": 3,
+          "tool_calls": 3,
+          "duration_ms": 5781,
+          "cost_usd": 0.003975610000000001,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-2d534926",
+          "task_id": "fix-readme-typo",
+          "variant": "h6-full",
+          "status": "passed",
+          "tokens": 16744,
+          "input_tokens": 16462,
+          "output_tokens": 282,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 4049,
+          "cost_usd": 0.004754940000000001,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-a1f799e0",
+          "task_id": "fix-readme-typo",
+          "variant": "h6-full",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 16749,
+          "input_tokens": 16467,
+          "output_tokens": 282,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 4181,
+          "cost_usd": 0.00475629,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-d607b9c8",
+          "task_id": "t-cost-wildcard",
+          "variant": "h6-full",
+          "status": "passed",
+          "tokens": 19712,
+          "input_tokens": 19235,
+          "output_tokens": 477,
+          "model_calls": 4,
+          "tool_calls": 4,
+          "duration_ms": 6313,
+          "cost_usd": 0.00571815,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-1ceaba0d",
+          "task_id": "t-cost-wildcard",
+          "variant": "h6-full",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 19689,
+          "input_tokens": 19235,
+          "output_tokens": 454,
+          "model_calls": 4,
+          "tool_calls": 4,
+          "duration_ms": 6084,
+          "cost_usd": 0.005692849999999999,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-a340e1f6",
+          "task_id": "tool-git-find-seed",
+          "variant": "h6-full",
+          "status": "passed",
+          "tokens": 16491,
+          "input_tokens": 16215,
+          "output_tokens": 276,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 3832,
+          "cost_usd": 0.004681650000000001,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-fac59420",
+          "task_id": "tool-git-find-seed",
+          "variant": "h6-full",
+          "repeat": 1,
+          "status": "passed",
+          "tokens": 16601,
+          "input_tokens": 16279,
+          "output_tokens": 322,
+          "model_calls": 4,
+          "tool_calls": 4,
+          "duration_ms": 4047,
+          "cost_usd": 0.00474953,
+          "verification_passed": true,
+          "workspace_changed": true
+        }
+      ]
+    }
+  ]
+}

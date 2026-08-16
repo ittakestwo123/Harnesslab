@@ -1,0 +1,17 @@
+id: t-optimize-front
+category: testing
+set: dev
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Read internal/optimize/pareto.go first to learn the Pareto-front API. Then
+  add a unit test named TestParetoFront to internal/optimize/optimize_test.go
+  that feeds a small set of candidate points where some are dominated by
+  others and asserts the returned front contains exactly the non-dominated
+  points. Use the file tools to edit the test file. The test must be named
+  exactly TestParetoFront and must pass.
+verification:
+  strategy: final
+  commands:
+    - findstr "func TestParetoFront" internal\optimize\optimize_test.go
+    - go test ./internal/optimize/...

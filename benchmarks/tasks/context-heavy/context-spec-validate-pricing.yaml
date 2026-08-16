@@ -1,0 +1,20 @@
+id: context-spec-validate-pricing
+category: context-heavy
+set: holdout
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Before writing anything, read internal/harness/spec/spec.go,
+  internal/harness/spec/spec_test.go and internal/harness/spec/template.go to
+  learn how specs are parsed (spec.Parse) and how the existing tests build
+  YAML documents. Then add test TestValidatePricing to spec_test.go that
+  asserts two things: (1) spec.Parse rejects a spec whose pricing section
+  contains a negative price (e.g. input_per_million: -1), and (2) spec.Parse
+  accepts a minimal spec that omits the pricing section entirely. Model the
+  style on the existing TestValidateRejects test. Use the file tools to edit
+  spec_test.go.
+verification:
+  strategy: final
+  commands:
+    - findstr "func TestValidatePricing" internal\harness\spec\spec_test.go
+    - go test ./internal/harness/spec/...

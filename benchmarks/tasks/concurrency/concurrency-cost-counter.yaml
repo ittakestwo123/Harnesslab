@@ -1,0 +1,20 @@
+id: concurrency-cost-counter
+category: concurrency
+set: dev
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Add a thread-safe counter to the internal/cost package. Create a new file
+  internal/cost/counter.go defining a Counter type with constructor
+  func NewCounter() *Counter, method (*Counter).Increment() and method
+  (*Counter).Value() int. Guard the internal count with a sync.Mutex so
+  concurrent increments are safe. Then add test TestCounterConcurrent to a new
+  file internal/cost/counter_test.go that spawns 100 goroutines, each calling
+  Increment() 1000 times (join them with a sync.WaitGroup), and asserts
+  Value() == 100000 afterwards. Use the file tools to create and edit the
+  files.
+verification:
+  strategy: final
+  commands:
+    - findstr "func NewCounter" internal\cost\counter.go
+    - go test ./internal/cost/...

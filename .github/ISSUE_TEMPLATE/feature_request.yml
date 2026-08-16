@@ -1,0 +1,28 @@
+name: Feature Request
+description: Suggest a new harness component, benchmark capability or UX improvement
+title: "[Feature] "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is missing or hard to do today
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the feature and how it serves trustworthy harness engineering experiments
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: How does this improve reproducibility, comparison, evaluation or optimization?

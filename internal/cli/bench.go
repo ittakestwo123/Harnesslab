@@ -28,6 +28,9 @@ func newBenchCmd() *cobra.Command {
 		maxTokens   int64
 		timeout     time.Duration
 		retry       int
+		repeat      int
+		set         string
+		tasksetFile string
 		dryRun      bool
 		quiet       bool
 	)
@@ -36,7 +39,9 @@ func newBenchCmd() *cobra.Command {
 		Short: "Benchmark tasks across harness variants",
 		Long: "Run every task in <tasks> (a directory of task yamls or a single " +
 			"file) under every harness variant of the matrix, on a bounded worker " +
-			"pool with token/time budget control.",
+			"pool with token/time budget control. Use --repeat N for independent " +
+			"repetitions and --set dev|holdout (or --taskset <file>) to select a " +
+			"task subset.",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if harnessDir == "" {
@@ -65,11 +70,21 @@ func newBenchCmd() *cobra.Command {
 				}
 			}
 
-			variants, err := matrix.Variants(base)
+			var variants []benchmark.Variant
+			if len(matrix.Harness) > 0 {
+				variants, err = matrix.HarnessVariants(filepath.Dir(matrixFile))
+			} else {
+				variants, err = matrix.Variants(base)
+			}
 			if err != nil {
 				return err
 			}
+
 			tasks, err := benchmark.LoadTasks(args[0])
+			if err != nil {
+				return err
+			}
+			tasks, err = selectTasks(tasks, set, tasksetFile)
 			if err != nil {
 				return err
 			}
@@ -77,19 +92,23 @@ func newBenchCmd() *cobra.Command {
 			var jobs []benchmark.Job
 			for _, t := range tasks {
 				for _, v := range variants {
-					jobs = append(jobs, benchmark.Job{
-						ID:      t.ID + "/" + v.Name,
-						Task:    t,
-						Variant: v,
-					})
+					for rep := 0; rep < repeat; rep++ {
+						jobs = append(jobs, benchmark.Job{
+							ID:      fmt.Sprintf("%s/%s/r%d", t.ID, v.Name, rep),
+							Task:    t,
+							Variant: v,
+							Repeat:  rep,
+						})
+					}
 				}
 			}
 
-			fmt.Printf("Benchmark: %d tasks x %d variants = %d jobs\n\n", len(tasks), len(variants), len(jobs))
+			fmt.Printf("Benchmark: %d tasks x %d variants x %d repeats = %d jobs\n\n",
+				len(tasks), len(variants), repeat, len(jobs))
 			if dryRun {
 				fmt.Println("Tasks:")
 				for _, t := range tasks {
-					fmt.Printf("  - %s (%s)\n", t.ID, t.Repo)
+					fmt.Printf("  - %s [%s/%s] (%s)\n", t.ID, t.Category, t.Set, t.Repo)
 				}
 				fmt.Println("Variants:")
 				for _, v := range variants {
@@ -138,6 +157,8 @@ func newBenchCmd() *cobra.Command {
 
 			fmt.Println()
 			fmt.Println(report.RenderTable())
+			fmt.Println()
+			fmt.Println(report.RenderStats())
 
 			reportPath := filepath.Join(harnessDir, "bench", report.ID+".json")
 			if err := report.WriteJSON(reportPath); err != nil {
@@ -155,7 +176,29 @@ func newBenchCmd() *cobra.Command {
 	cmd.Flags().Int64Var(&maxTokens, "max-tokens", 0, "stop after this many cumulative tokens (0 = unlimited)")
 	cmd.Flags().DurationVar(&timeout, "timeout", 0, "overall benchmark timeout (0 = none)")
 	cmd.Flags().IntVar(&retry, "retry", 0, "retry scheduler-level failures this many extra times")
+	cmd.Flags().IntVar(&repeat, "repeat", 1, "independent repetitions per task x variant")
+	cmd.Flags().StringVar(&set, "set", "", "keep only tasks in this set: dev | holdout")
+	cmd.Flags().StringVar(&tasksetFile, "taskset", "", "keep only tasks listed in a taskset yaml")
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "print the job matrix without running")
 	cmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "only print the summary table")
 	return cmd
+}
+
+// selectTasks applies the --set and --taskset filters.
+func selectTasks(tasks []*benchmark.Task, set, tasksetFile string) ([]*benchmark.Task, error) {
+	if set != "" && set != benchmark.SetDev && set != benchmark.SetHoldout {
+		return nil, fmt.Errorf("bench: unsupported --set %q (supported: dev, holdout)", set)
+	}
+	tasks = benchmark.FilterBySet(tasks, set)
+	if tasksetFile != "" {
+		ts, err := benchmark.LoadTaskSet(tasksetFile)
+		if err != nil {
+			return nil, err
+		}
+		tasks = benchmark.FilterByTaskSet(tasks, ts)
+	}
+	if len(tasks) == 0 {
+		return nil, fmt.Errorf("bench: no tasks match the selected set/taskset")
+	}
+	return tasks, nil
 }

@@ -1,0 +1,17 @@
+id: m-reproduce-move-envmode
+category: multi-file
+set: dev
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Move the EnvMode type, its constants, and the ParseEnvMode function out of
+  internal/reproduce/envcheck.go into a new file internal/reproduce/envmode.go
+  in the same package. Update nothing else: the package must keep compiling
+  and all tests in ./internal/reproduce/... must still pass. Use the file
+  tools.
+verification:
+  strategy: final
+  commands:
+    - findstr "func ParseEnvMode" internal\reproduce\envmode.go
+    - go build ./...
+    - go test ./internal/reproduce/...

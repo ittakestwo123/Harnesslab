@@ -1,0 +1,18 @@
+id: context-builder-status
+category: context-heavy
+set: dev
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Read internal/harness/builder/builder.go and
+  internal/harness/builder/status_test.go first. Note the exact signature of
+  the unexported computeStatus function and the store.Status constants used by
+  the existing tests (imported from internal/store). Then add test
+  TestComputeStatusCancelled to status_test.go that calls computeStatus with
+  the cancelled flag set to true and asserts it returns store.StatusCancelled
+  regardless of the other arguments. Use the file tools to edit status_test.go.
+verification:
+  strategy: final
+  commands:
+    - findstr "func TestComputeStatusCancelled" internal\harness\builder\status_test.go
+    - go test ./internal/harness/builder/...

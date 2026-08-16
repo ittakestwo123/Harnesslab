@@ -1,0 +1,17 @@
+id: m-benchmark-move-format
+category: multi-file
+set: dev
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Move the private `comma` helper function out of internal/benchmark/report.go
+  into a new file internal/benchmark/format.go in the same package, leaving
+  the caller (RenderTable) untouched. Update nothing else: the package must
+  keep compiling and all tests in ./internal/benchmark/... must still pass.
+  Use the file tools.
+verification:
+  strategy: final
+  commands:
+    - findstr "func comma" internal\benchmark\format.go
+    - go build ./...
+    - go test ./internal/benchmark/...

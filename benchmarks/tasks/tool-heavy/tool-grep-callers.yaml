@@ -1,0 +1,17 @@
+id: tool-grep-callers
+category: tool-heavy
+set: holdout
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Discover which Go files in the repository call the function spec.Load (the
+  harness-spec loader in the internal/harness/spec package). Use the
+  exec_command tool (for example a recursive findstr or grep over the source
+  tree) or your search tools. Then create CALLERS.md at the repository root
+  listing every matching file path, one per line, as paths relative to the
+  repository root. Use the file tools to create CALLERS.md.
+verification:
+  strategy: final
+  commands:
+    - findstr "internal" CALLERS.md
+    - go build ./...

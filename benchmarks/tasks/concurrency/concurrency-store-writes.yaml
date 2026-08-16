@@ -1,0 +1,19 @@
+id: concurrency-store-writes
+category: concurrency
+set: holdout
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Add a concurrency test to the JSON run store. First inspect
+  internal/store/jsonstore/jsonstore.go and jsonstore_test.go to learn the
+  exact API: the New constructor, CreateRun, ListRuns and the store.Run fields
+  (see internal/store/store.go for the Run type). Then add test
+  TestConcurrentWritesAllListable to internal/store/jsonstore/jsonstore_test.go
+  that creates a store in a temp dir, writes 50 runs from 10 concurrent
+  goroutines (5 runs each, unique run IDs, join with a sync.WaitGroup), and
+  after joining asserts ListRuns returns exactly 50 runs. Use the file tools.
+verification:
+  strategy: final
+  commands:
+    - findstr "func TestConcurrentWritesAllListable" internal\store\jsonstore\jsonstore_test.go
+    - go test ./internal/store/jsonstore/...

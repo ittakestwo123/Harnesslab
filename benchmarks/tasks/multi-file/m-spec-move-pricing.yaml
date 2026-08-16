@@ -1,0 +1,18 @@
+id: m-spec-move-pricing
+category: multi-file
+set: dev
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Move the PricingSpec type, the ModelPricing struct and the ModelPrice method
+  out of internal/harness/spec/spec.go into a new file
+  internal/harness/spec/pricing.go in the same package. Update nothing else:
+  the package must keep compiling and all tests in ./internal/harness/spec/...
+  and ./internal/cost/... must still pass. Use the file tools.
+verification:
+  strategy: final
+  commands:
+    - findstr "type PricingSpec" internal\harness\spec\pricing.go
+    - go build ./...
+    - go test ./internal/harness/spec/...
+    - go test ./internal/cost/...

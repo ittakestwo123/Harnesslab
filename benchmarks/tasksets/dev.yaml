@@ -1,0 +1,28 @@
+id: dev
+name: dev set (optimizer-visible)
+tasks:
+  - add-spec-test
+  - add-sum-tokens-helper
+  - add-version-package
+  - basic-add-changelog-entry
+  - basic-add-readme-section
+  - concurrency-benchmark-limiter
+  - concurrency-cost-counter
+  - context-builder-status
+  - context-reproduce-roundtrip
+  - fix-changelog-typo
+  - fix-diff-tools
+  - fix-readme-typo
+  - fix-sandbox-deny
+  - m-benchmark-move-format
+  - m-reproduce-move-envmode
+  - m-spec-move-pricing
+  - r-benchmark-rename-comma
+  - r-cost-rename-pricing
+  - r-reproduce-envfield
+  - t-cost-wildcard
+  - tool-build-verify
+  - tool-git-find-seed
+  - t-optimize-front
+  - t-reproduce-envmode
+  - t-spec-pricing-default
