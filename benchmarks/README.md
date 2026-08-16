@@ -111,6 +111,13 @@ harness bench benchmarks/tasks \
 <!-- The task table is generated from benchmarks/tasks; see results/ for the
      latest published run. -->
 
+## Latest results
+
+- **v0.2 40-run report** (10 tasks x 4 variants, 39/40, USD 0.38):
+  [results/README.md](results/README.md)
+- **v0.3 statistical-report example** (4 tasks x H0..H6 x 2 repeats, 56 runs,
+  mean/median/stddev/P50/P90/CI95): [results/benchmark-v3-example.md](results/benchmark-v3-example.md)
+
 ## Notes
 
 - Verification commands are shell-specific (the examples use Windows `cmd`
