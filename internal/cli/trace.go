@@ -157,6 +157,7 @@ func newReplayCmd() *cobra.Command {
 				ReplayFrom:     runID,
 				ReplayFallback: fallback,
 				ReplayModel:    true,
+				ReplayPatch:    rec.WorkspacePatch,
 			})
 			if err != nil {
 				return err

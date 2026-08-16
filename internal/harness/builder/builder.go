@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -55,6 +56,10 @@ type Options struct {
 	ReplayFallback bool
 	// ReplayModel enables model-call replay in addition to tool replay.
 	ReplayModel bool
+	// ReplayPatch, when set, is applied to the (fresh) workspace before
+	// verification during offline replay, so the recorded workspace changes
+	// are re-materialized and verification reflects the recorded outcome.
+	ReplayPatch string
 	// StoreDriver selects the run store backend: "json" (default) or "sqlite".
 	StoreDriver string
 }
@@ -75,6 +80,7 @@ type Harness struct {
 	workspaceMgr workspace.Workspace
 	sandbox      sandbox.Sandbox
 	cost         *cost.Calculator
+	replayPatch  string
 }
 
 // Result is the outcome of one harness run.
@@ -173,6 +179,7 @@ func Build(ctx context.Context, s *spec.HarnessSpec, opts Options) (*Harness, er
 		Replay:       replayCfg,
 		sandbox:      sb,
 		cost:         cost.New(s.Pricing),
+		replayPatch:  opts.ReplayPatch,
 	}, nil
 }
 
@@ -188,6 +195,22 @@ func newRuntime(s *spec.HarnessSpec, tools []tool.Tool) (hlruntime.Runtime, erro
 	default:
 		return nil, fmt.Errorf("builder: unsupported runtime type %q", s.Runtime.Type)
 	}
+}
+
+// applyWorkspacePatch applies a unified git diff to the workspace root,
+// re-materializing recorded file changes on a fresh worktree.
+func applyWorkspacePatch(ctx context.Context, root, patch string) error {
+	if strings.TrimSpace(patch) == "" {
+		return nil
+	}
+	cmd := exec.CommandContext(ctx, "git", "-C", root, "apply", "--whitespace=nowarn", "-")
+	cmd.Stdin = strings.NewReader(patch)
+	var stderr strings.Builder
+	cmd.Stderr = &stderr
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("git apply: %w: %s", err, stderr.String())
+	}
+	return nil
 }
 
 // newSandbox builds the sandbox configured by the spec.
@@ -310,6 +333,14 @@ func (h *Harness) Run(ctx context.Context, task string, onEvent func(hlruntime.R
 		}
 	}
 	metrics.DurationMS = time.Since(started).Milliseconds()
+
+	// Offline replay: re-materialize the recorded workspace changes on the
+	// fresh worktree so verification reflects the recorded outcome.
+	if h.replayPatch != "" && h.Workspace != nil {
+		if err := applyWorkspacePatch(ctx, h.Workspace.Root, h.replayPatch); err != nil {
+			log.Warnf("builder: apply replay patch: %v", err)
+		}
+	}
 
 	// Verification is a first-class citizen of a harness: it must actually
 	// pass (no fake PASS from a text-only answer), and for coding tasks the

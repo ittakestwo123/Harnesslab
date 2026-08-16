@@ -119,6 +119,7 @@ func newReproduceCmd() *cobra.Command {
 				replayID    string
 				bundleDir   string
 				recordedEnv string
+				replayPatch string
 			)
 
 			if isBundle(arg) {
@@ -144,6 +145,9 @@ func newReproduceCmd() *cobra.Command {
 				if data, err := os.ReadFile(filepath.Join(tmp, "environment.json")); err == nil {
 					recordedEnv = string(data)
 				}
+				if data, err := os.ReadFile(filepath.Join(tmp, "git.patch")); err == nil {
+					replayPatch = string(data)
+				}
 			} else {
 				st, err := openStore(harnessDir, storeDriver)
 				if err != nil {
@@ -155,6 +159,7 @@ func newReproduceCmd() *cobra.Command {
 				}
 				specYAML, task, repo, commit, replayID = run.SpecYAML, run.Task, run.Repository, run.Commit, run.ID
 				recordedEnv = run.Environment
+				replayPatch = run.WorkspacePatch
 			}
 
 			// Resolve the harness spec: prefer the recorded one.
@@ -184,6 +189,7 @@ func newReproduceCmd() *cobra.Command {
 				UserID:      "reproduce",
 				ReplayFrom:  replayID,
 				ReplayModel: true,
+				ReplayPatch: replayPatch,
 			})
 			if err != nil {
 				return err
