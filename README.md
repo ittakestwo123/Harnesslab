@@ -167,14 +167,20 @@ environment drift detected (1 mismatches)
 
 ## Public benchmark
 
-`benchmarks/` contains a reproducible coding-agent benchmark: 10 tasks
-against the seeded `bench/tasks-v2` commit `075550a` of this repository
-(4 real code regressions caught by failing tests, 2 typos, 2 add-a-test,
-2 add-a-feature), a base harness with DeepSeek pricing, and a 2×2 variant
-matrix. Every task is verified by real repository state:
+`benchmarks/` contains a reproducible coding-agent benchmark: **34 tasks in 8
+categories** (basic, debugging, multi-file, refactor, testing, concurrency,
+context-heavy, tool-heavy) against the seeded `bench/tasks-v2` commit
+`075550a` of this repository (4 real code regressions caught by failing tests,
+2 typos, 2 add-a-test, 2 add-a-feature), a base harness with DeepSeek pricing,
+a 2×2 variant matrix and a 7-harness **ablation matrix** (H0 baseline →
+planner → verification → retry → repo-map context → skills → full). Tasks are
+partitioned into `dev` (25) / `holdout` (9) sets, and `harness bench --repeat N`
+produces statistically reportable repetitions (mean / median / stddev / P50 /
+P90 / 95% CI per variant).
 
 ```bash
 harness bench benchmarks/tasks --config benchmarks/harness.yaml --matrix benchmarks/matrix.yaml
+harness bench benchmarks/tasks --config benchmarks/harness.yaml --matrix benchmarks/matrices/harness-ablation.yaml --set dev --repeat 2
 ```
 
 Latest 40-run result (2026-08-16, DeepSeek `deepseek-chat`):
