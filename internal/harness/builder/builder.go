@@ -24,6 +24,7 @@ import (
 	"github.com/ittakestwo123/Harnesslab/internal/replay"
 	"github.com/ittakestwo123/Harnesslab/internal/reproduce"
 	hlruntime "github.com/ittakestwo123/Harnesslab/internal/runtime"
+	codexrt "github.com/ittakestwo123/Harnesslab/internal/runtime/codex"
 	"github.com/ittakestwo123/Harnesslab/internal/runtime/trpc"
 	"github.com/ittakestwo123/Harnesslab/internal/sandbox"
 	"github.com/ittakestwo123/Harnesslab/internal/store"
@@ -117,7 +118,7 @@ func Build(ctx context.Context, s *spec.HarnessSpec, opts Options) (*Harness, er
 		return nil, err
 	}
 
-	rt, err := trpc.New(s, tools)
+	rt, err := newRuntime(s, tools)
 	if err != nil {
 		return nil, err
 	}
@@ -173,6 +174,20 @@ func Build(ctx context.Context, s *spec.HarnessSpec, opts Options) (*Harness, er
 		sandbox:      sb,
 		cost:         cost.New(s.Pricing),
 	}, nil
+}
+
+// newRuntime builds the runtime adapter selected by the harness spec. The
+// Runtime interface is the only boundary HarnessLab core depends on; adding a
+// runtime is a new adapter plus a case here.
+func newRuntime(s *spec.HarnessSpec, tools []tool.Tool) (hlruntime.Runtime, error) {
+	switch s.Runtime.Type {
+	case "", spec.RuntimeTRPC:
+		return trpc.New(s, tools)
+	case spec.RuntimeCodex:
+		return codexrt.New(s)
+	default:
+		return nil, fmt.Errorf("builder: unsupported runtime type %q", s.Runtime.Type)
+	}
 }
 
 // newSandbox builds the sandbox configured by the spec.
