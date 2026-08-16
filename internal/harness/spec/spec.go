@@ -33,6 +33,10 @@ const (
 	// Planning strategies.
 	PlanningNone = "none"
 	PlanningTodo = "todo"
+
+	// Context strategies.
+	ContextNone    = "none"
+	ContextRepoMap = "repo-map"
 )
 
 // HarnessSpec describes one complete harness. It maps 1:1 to a harness.yaml.
@@ -43,6 +47,8 @@ type HarnessSpec struct {
 	Agent        AgentSpec        `yaml:"agent"`
 	Model        ModelSpec        `yaml:"model"`
 	Planning     PlanningSpec     `yaml:"planning"`
+	Context      ContextSpec      `yaml:"context,omitempty"`
+	Skills       SkillsSpec       `yaml:"skills,omitempty"`
 	Tools        ToolsSpec        `yaml:"tools"`
 	Verification VerificationSpec `yaml:"verification"`
 	Success      SuccessSpec      `yaml:"success"`
@@ -75,6 +81,28 @@ type ModelSpec struct {
 // PlanningSpec controls the planning strategy.
 type PlanningSpec struct {
 	Strategy string `yaml:"strategy"`
+}
+
+// ContextSpec controls how much repository context the agent receives.
+// Strategy "none" (default) gives no extra context; "repo-map" injects a
+// generated repository structure summary into the system instruction.
+// This is the smallest useful adaptive-context strategy; richer strategies
+// (retrieval, token-budgeted compaction) can be added behind the same field.
+type ContextSpec struct {
+	Strategy string `yaml:"strategy"`
+}
+
+// SkillsSpec enables static skills: named, reusable working procedures
+// injected into the system instruction. This is a clean interface with a
+// minimal strategy (instruction sections); tool-backed skills can be layered
+// on later without changing the schema.
+type SkillsSpec struct {
+	// Enabled turns the skills section on.
+	Enabled bool `yaml:"enabled"`
+	// List is an ordered list of skill definitions, each rendered as a
+	// titled instruction section, e.g. "debug: run the failing test first,
+	// read the error, then bisect".
+	List []string `yaml:"list,omitempty"`
 }
 
 // ToolsSpec toggles which built-in tool groups the agent gets.
@@ -264,6 +292,13 @@ func (s *HarnessSpec) Validate() error {
 	case PlanningTodo:
 	default:
 		return fmt.Errorf("unsupported planning strategy %q", s.Planning.Strategy)
+	}
+	switch s.Context.Strategy {
+	case "":
+		s.Context.Strategy = ContextNone
+	case ContextNone, ContextRepoMap:
+	default:
+		return fmt.Errorf("unsupported context strategy %q (supported: none, repo-map)", s.Context.Strategy)
 	}
 	switch s.Verification.Strategy {
 	case "":
