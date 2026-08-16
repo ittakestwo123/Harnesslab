@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Cost model**: `pricing` section in HarnessSpec (provider → model →
+  input/output per million USD, `*` wildcard supported); `Run.Metrics.CostUSD`
+  is computed when pricing is configured and flows into reports
+- **Environment validation**: run records capture the toolchain environment;
+  `harness reproduce --env-mode warn|strict|ignore` compares recorded vs
+  current OS/arch/Go/git/HarnessLab/tRPC-Agent-Go and reports drift
+  (`environment drift detected`; strict aborts on mismatch)
+- **Public benchmark v1** (`benchmarks/`): 10 tasks against the seeded
+  `bench/tasks-v1` commit of the HarnessLab repo — 4 implementation
+  regressions (each caught by a failing test), 2 doc typos, 2 add-a-test,
+  2 add-a-feature — plus a base harness with pricing and a 2×2 variant
+  matrix
+- `tools.filesystem` group: framework file read/write/replace/search tools
+  scoped to the workspace, so coding agents can edit files cross-platform
+- Benchmark `Matrix` gains a `tools_filesystem` dimension
+- Bench progress lines now show job errors
+
+### Fixed
+
+- Concurrent benchmark runs no longer race on the shared git mirror
+  (creation is guarded by a lock file; workers wait for the lock to release)
+
 - **Sandbox** (`sandbox.type: none | process | docker | bwrap`) for agent
   shell commands and verification:
   - `process`: cwd isolation, secret env scrubbing, per-command timeouts,

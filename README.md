@@ -132,6 +132,53 @@ sandbox:
 When a non-`none` sandbox is configured, the agent's `exec_command` tool and
 the verification commands both route through it.
 
+## Costs
+
+```yaml
+pricing:
+  deepseek:
+    deepseek-chat:
+      input_per_million: 0.27
+      output_per_million: 1.10
+  openai:
+    "*":
+      input_per_million: 1.25
+      output_per_million: 10.0
+```
+
+When `pricing` is set, every run's `CostUSD` is computed from its token usage
+and shown in reports (`$0.0016`–`$0.033` for the benchmark demo runs).
+
+## Reproducibility & environment validation
+
+`harness reproduce <run-id | bundle.harness> [--env-mode warn|strict|ignore]`
+compares the recorded toolchain environment (OS, arch, Go, git, HarnessLab,
+tRPC-Agent-Go versions) against the current one:
+
+```text
+Environment check:
+  OS             MATCH    recorded="windows" current="windows"
+  Go             MISMATCH recorded="go1.23.0" current="go1.26.5"
+  ...
+environment drift detected (1 mismatches)
+```
+
+`strict` aborts the reproduction on any mismatch; `warn` (default) continues.
+
+## Public benchmark
+
+`benchmarks/` contains a reproducible coding-agent benchmark: 10 tasks
+against the seeded `bench/tasks-v1` commit of this repository (4 real code
+regressions caught by failing tests, 2 typos, 2 add-a-test, 2 add-a-feature),
+a base harness with DeepSeek pricing, and a 2×2 variant matrix. Every task is
+verified by real repository state:
+
+```bash
+harness bench benchmarks/tasks --config benchmarks/harness.yaml --matrix benchmarks/matrix.yaml
+```
+
+See [benchmarks/README.md](benchmarks/README.md).
+
 ## Status
 
 `v0.1.0-alpha.1` — the full loop **Build → Trace → Replay → Diff → Benchmark
