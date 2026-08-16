@@ -30,10 +30,13 @@ type Options struct {
 }
 
 // Job is one unit of benchmark work: a task executed under a harness variant.
+// Repeat identifies which independent repetition this job is (0-based); each
+// repetition gets its own run record and is never overwritten.
 type Job struct {
 	ID      string
 	Task    *Task
 	Variant Variant
+	Repeat  int
 }
 
 // Outcome is the result of one job execution.
@@ -87,6 +90,7 @@ func (s *Scheduler) Run(ctx context.Context, jobs []Job, onOutcome func(Outcome)
 		current = failed
 	}
 	report.FinishedAt = time.Now()
+	report.Finalize()
 	return report, nil
 }
 
