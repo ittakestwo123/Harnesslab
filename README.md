@@ -2,14 +2,14 @@
 
 **Build. Trace. Replay. Benchmark. Evolve.**
 
-An open-source Go platform for **AI agent harness engineering**, built on top of
+An open-source Go platform for **AI agent harneas engineering**, built on top of
 [tRPC-Agent-Go](https://github.com/trpc-group/trpc-agent-go).
 
 > **Same model. Same task. Same repository. Different harness.**
 >
 > HarnessLab makes the difference measurable: it turns the hard-coded parts of
-> a coding agent — prompt, context, planning, tools, verification, retry,
-> budget — into a configurable, observable, reproducible, comparable and
+> a coding agent 鈥?prompt, context, planning, tools, verification, retry,
+> budget 鈥?into a configurable, observable, reproducible, comparable and
 > optimizable **harness**.
 
 [![CI](https://github.com/ittakestwo123/Harnesslab/actions/workflows/ci.yml/badge.svg)](https://github.com/ittakestwo123/Harnesslab/actions/workflows/ci.yml)
@@ -17,7 +17,7 @@ An open-source Go platform for **AI agent harness engineering**, built on top of
 
 ---
 
-## Demo 1 — Offline Replay
+## Demo 1 鈥?Offline Replay
 
 Replay a coding-agent run **without calling the model API**:
 
@@ -34,9 +34,9 @@ harness run --repo https://github.com/octocat/Hello-World.git "list the files"
 harness replay <run-id>          # offline, no API key needed
 ```
 
-## Demo 2 — Harness Diff
+## Demo 2 鈥?Harness Diff
 
-Same model, same task, same repository — different harness:
+Same model, same task, same repository 鈥?different harness:
 
 ```text
 Run A (with shell tool)          Run B (without tools)
@@ -46,14 +46,14 @@ Model Calls  4                   1
 
 First divergence at step 1:
   A: model ... (then executes ls / dir / type README)
-  B: model ... <function_results>  ← hallucinated a file listing
+  B: model ... <function_results>  鈫?hallucinated a file listing
 ```
 
 ```bash
 harness diff <run-a> <run-b>
 ```
 
-## Demo 3 — Verified Benchmark
+## Demo 3 鈥?Verified Benchmark
 
 With `success.require_workspace_change` and a real verification command, a
 harness that only "answers" can no longer fake a PASS:
@@ -79,31 +79,26 @@ harness optimize --report .harness/bench/bench-<id>.json
 ## What HarnessLab does
 
 HarnessLab is **not** another agent framework. It is a laboratory for the
-layer around the model — the **harness**:
+layer around the model 鈥?the **harness**:
 
 ```text
                      LLM
-                      │
-                      ▼
-           ┌─────────────────────┐
-           │       Harness       │   Context · Planning · Memory · Skills
-           │                     │   Tools · Retry · Verification · Sandbox
-           │                     │   Compaction · Policies · Budget
-           └──────────┬──────────┘
-                      ▼
-                  Repository
+                      鈹?                      鈻?           鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?           鈹?      Harness       鈹?  Context 路 Planning 路 Memory 路 Skills
+           鈹?                    鈹?  Tools 路 Retry 路 Verification 路 Sandbox
+           鈹?                    鈹?  Compaction 路 Policies 路 Budget
+           鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?                      鈻?                  Repository
 ```
 
 It records the full agent trajectory and makes it:
 
-- **Replayable** — offline replay from recorded tool/model results
-- **Comparable** — trajectory diff with first-divergence detection
-- **Benchmarkable** — task x harness-variant matrices on a worker pool
-- **Reproducible** — `.harness` bundles (spec + trace + replay store + env)
-- **Optimizable** — failure-pattern analysis and Pareto fronts
-- **Verifiable** — `success.require_verification_pass` + `success.require_workspace_change`
+- **Replayable** 鈥?offline replay from recorded tool/model results
+- **Comparable** 鈥?trajectory diff with first-divergence detection
+- **Benchmarkable** 鈥?task x harness-variant matrices on a worker pool
+- **Reproducible** 鈥?`.harness` bundles (spec + trace + replay store + env)
+- **Optimizable** 鈥?failure-pattern analysis and Pareto fronts
+- **Verifiable** 鈥?`success.require_verification_pass` + `success.require_workspace_change`
   stop text-only hallucinated answers from faking a PASS
-- **Sandboxable** — agent shell commands and verification run through a
+- **Sandboxable** 鈥?agent shell commands and verification run through a
   configurable sandbox (`none` / `process` / `docker` / `bwrap`) with env
   scrubbing, timeouts, and command allow/deny policies
 
@@ -121,12 +116,12 @@ sandbox:
   #   - echo
 ```
 
-- `none` — direct host execution (default)
-- `process` — cwd isolation, **secret env scrubbing** (API keys/tokens are not
+- `none` 鈥?direct host execution (default)
+- `process` 鈥?cwd isolation, **secret env scrubbing** (API keys/tokens are not
   visible to sandboxed commands), per-command timeouts, allow/deny lists
-- `docker` — commands run inside a container with the workspace mounted at
+- `docker` 鈥?commands run inside a container with the workspace mounted at
   `/workspace` (`sandbox.image`, network policy)
-- `bwrap` — bubblewrap sandbox on Linux (workspace rw, system dirs ro,
+- `bwrap` 鈥?bubblewrap sandbox on Linux (workspace rw, system dirs ro,
   network disabled unless allowed)
 
 When a non-`none` sandbox is configured, the agent's `exec_command` tool and
@@ -147,7 +142,7 @@ pricing:
 ```
 
 When `pricing` is set, every run's `CostUSD` is computed from its token usage
-and shown in reports (`$0.0016`–`$0.033` for the benchmark demo runs).
+and shown in reports (`$0.0016`鈥揱$0.033` for the benchmark demo runs).
 
 ## Reproducibility & environment validation
 
@@ -170,7 +165,7 @@ environment drift detected (1 mismatches)
 `benchmarks/` contains a reproducible coding-agent benchmark: 10 tasks
 against the seeded `bench/tasks-v1` commit of this repository (4 real code
 regressions caught by failing tests, 2 typos, 2 add-a-test, 2 add-a-feature),
-a base harness with DeepSeek pricing, and a 2×2 variant matrix. Every task is
+a base harness with DeepSeek pricing, and a 2脳2 variant matrix. Every task is
 verified by real repository state:
 
 ```bash
@@ -181,8 +176,8 @@ See [benchmarks/README.md](benchmarks/README.md).
 
 ## Status
 
-`v0.2.0-alpha` — the full loop **Build → Trace → Replay → Diff → Benchmark
-→ Reproduce → Optimize** is implemented and verified end-to-end with a real
+`v0.2.0-alpha` 鈥?the full loop **Build 鈫?Trace 鈫?Replay 鈫?Diff 鈫?Benchmark
+鈫?Reproduce 鈫?Optimize** is implemented and verified end-to-end with a real
 DeepSeek model, with sandboxed execution, cost accounting, environment
 validation and a public 10-task benchmark. See [CHANGELOG.md](CHANGELOG.md)
 and the runnable demos in [docs/demo.md](docs/demo.md).
@@ -249,13 +244,13 @@ Trace:
 
 ```text
 HarnessSpec (harness.yaml)
-    → Harness Builder        (workspace + runtime + recorder + store)
-    → Runtime Interface      (runtime-agnostic)
-    → TRPC Runtime Adapter   (tRPC-Agent-Go runner, event normalization,
+    鈫?Harness Builder        (workspace + runtime + recorder + store)
+    鈫?Runtime Interface      (runtime-agnostic)
+    鈫?TRPC Runtime Adapter   (tRPC-Agent-Go runner, event normalization,
                               model wrapper + tool callbacks for replay)
-    → HarnessEvent stream
-    → Trace (JSONL) / Run Store (JSON|SQLite) / Replay Store
-    → Diff / Benchmark / Reproduce / Optimize
+    鈫?HarnessEvent stream
+    鈫?Trace (JSONL) / Run Store (JSON|SQLite) / Replay Store
+    鈫?Diff / Benchmark / Reproduce / Optimize
 ```
 
 ## Development notes

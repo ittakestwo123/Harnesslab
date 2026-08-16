@@ -52,7 +52,9 @@ func (d *Diff) Changed() bool {
 	if d == nil {
 		return false
 	}
-	return strings.TrimSpace(d.Patch) != "" || strings.TrimSpace(d.Stat) != "" || len(d.Untracked) > 0
+	// BUG(seed): only the patch is considered; stat-only and untracked-only
+	// changes are reported as unchanged.
+	return strings.TrimSpace(d.Patch) != ""
 }
 
 // Workspace creates and manages isolated workspaces.

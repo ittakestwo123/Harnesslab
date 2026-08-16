@@ -54,7 +54,9 @@ func (s *processSandbox) Close() error { return nil }
 
 func matchDenied(cmd string, denied []string) string {
 	for _, d := range denied {
-		if d != "" && strings.Contains(cmd, d) {
+		// BUG(seed): only prefix matches are rejected; denied commands
+		// embedded in the middle of a command slip through.
+		if d != "" && strings.HasPrefix(cmd, d) {
 			return d
 		}
 	}

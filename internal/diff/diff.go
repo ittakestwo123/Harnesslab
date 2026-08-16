@@ -96,12 +96,8 @@ func BuildSteps(events []hlruntime.RunEvent) []Step {
 			}
 			steps = append(steps, s)
 		case hlruntime.EventToolStart:
-			s := Step{Type: StepTool}
-			if ev.Tool != nil {
-				s.Name = ev.Tool.Name
-				s.Args = ev.Tool.Arguments
-			}
-			pendingTool = &s
+			// BUG(seed): the pending tool step is never captured, so
+			// tool_end events produce standalone steps without a name.
 		case hlruntime.EventToolEnd:
 			if pendingTool == nil {
 				s := Step{Type: StepTool}
@@ -116,7 +112,8 @@ func BuildSteps(events []hlruntime.RunEvent) []Step {
 				pendingTool.Result = ev.Tool.Result
 			}
 			steps = append(steps, *pendingTool)
-			pendingTool = nil
+			// BUG(seed): pendingTool is not reset, so a second tool_end
+			// appends the first tool's step again.
 		case hlruntime.EventError:
 			s := Step{Type: StepError}
 			if ev.Error != nil {
