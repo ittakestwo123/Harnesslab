@@ -28,9 +28,9 @@ benchmarks/bench/
 *.harness
 bench-*.json
 
-# Binaries
-harness
-harness.exe
+# Binaries (root-anchored so the internal/harness package is NOT ignored)
+/harness
+/harness.exe
 *.exe
 
 # Build
