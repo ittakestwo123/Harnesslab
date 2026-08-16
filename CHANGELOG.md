@@ -9,6 +9,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Demo GIF** (`docs/demo.gif`): 12-second animated terminal demo rendered
+  from real CLI output (run → runs → replay → diff), plus a static preview.
+- **Community launch materials** (`docs/announcement.md`): HN / Reddit / X /
+  知乎 / 掘金 copy around the "Same model. Same task. Same repository.
+  Different harness." narrative, with real benchmark and replay evidence.
+- **README**: demo GIF, installation quick-start (Release binaries or
+  `go build`), go-version/release badges.
+
+### Fixed
+
+- **Offline replay hash mismatches**: the canonicalizer now normalizes nested
+  JSON strings (tool results embedded in message content), and recorded tool
+  outputs are normalized (`$WORKSPACE`) at store time — so every later model
+  call whose context carries a prior tool result replays cleanly in a fresh
+  worktree (full offline replay: 4 model + 3 tool calls served in ~16ms).
+- **Replay verification**: `harness replay` / `reproduce` re-apply the
+  recorded workspace patch before verification, so a successfully recorded run
+  replays as PASSED (previously verification ran against the untouched fresh
+  worktree and reported failed).
+
+## [v0.3.0-alpha] - 2026-08-16
+
+Benchmark v3 milestone: a larger, categorized, statistically rigorous public
+benchmark plus open-source UX (templates, binary releases).
+
+### Added
+
 - **LLM Harness Optimizer**: `harness optimize --llm` generates full harness
   candidates from the failure analysis via the configured LLM
   (DeepSeek/OpenAI), validates them against the real spec schema (hallucinated
