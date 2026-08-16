@@ -1,0 +1,13 @@
+id: fix-diff-tools
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: a774e51
+prompt: |
+  A regression was introduced in the internal/diff package: tool names are lost
+  when building trajectory steps, so TestBuildSteps and TestBuildStepsMultipleTools
+  fail. Find the bug in diff.BuildSteps (hint: look at how the pending tool step
+  is captured) and fix it so ALL tests in ./internal/diff/... pass.
+  Do not modify any test files.
+verification:
+  strategy: final
+  commands:
+    - go test ./internal/diff/...

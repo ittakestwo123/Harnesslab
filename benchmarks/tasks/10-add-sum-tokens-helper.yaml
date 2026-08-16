@@ -1,0 +1,14 @@
+id: add-sum-tokens-helper
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: a774e51
+prompt: |
+  Add an exported helper "func SumTokens(run *store.Run) int64" to the
+  internal/benchmark package (a new file internal/benchmark/helpers.go) that
+  returns run.Metrics.InputTokens + run.Metrics.OutputTokens. Use the file
+  tools. The function must be named SumTokens.
+verification:
+  strategy: final
+  commands:
+    - findstr "func SumTokens" internal\benchmark\helpers.go
+    - go build ./...
+    - go test ./internal/benchmark/...

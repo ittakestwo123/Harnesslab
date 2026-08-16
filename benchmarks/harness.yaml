@@ -1,0 +1,28 @@
+version: harnesslab/v1
+name: harnesslab-bench-v1
+runtime:
+  type: trpc
+agent:
+  type: coding
+model:
+  provider: deepseek
+  model: deepseek-chat
+  temperature: 0.1
+planning:
+  strategy: todo
+tools:
+  filesystem: true
+  shell: true
+success:
+  require_verification_pass: true
+  require_workspace_change: true
+sandbox:
+  type: process
+  timeout: 120s
+budget:
+  timeout: 10m
+pricing:
+  deepseek:
+    deepseek-chat:
+      input_per_million: 0.27
+      output_per_million: 1.10

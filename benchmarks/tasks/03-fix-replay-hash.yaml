@@ -1,0 +1,13 @@
+id: fix-replay-hash
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: a774e51
+prompt: |
+  A regression was introduced in the replay package: Canonicalizer.Hash no
+  longer includes the tool name, so different tools with identical arguments
+  produce colliding hashes. TestCanonicalizerNameIncluded fails. Fix
+  replay.Canonicalizer.Hash so ALL tests in ./internal/replay/... pass.
+  Do not modify any test files.
+verification:
+  strategy: final
+  commands:
+    - go test ./internal/replay/...

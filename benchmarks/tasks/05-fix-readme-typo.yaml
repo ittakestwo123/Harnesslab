@@ -1,0 +1,10 @@
+id: fix-readme-typo
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: a774e51
+prompt: |
+  The README.md tagline contains a typo: "AI agent harneas engineering" should
+  be "AI agent harness engineering". Fix the typo using the file tools.
+verification:
+  strategy: final
+  commands:
+    - findstr "harness engineering" README.md

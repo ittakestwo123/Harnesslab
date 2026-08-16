@@ -1,0 +1,13 @@
+id: add-version-package
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: a774e51
+prompt: |
+  Create internal/version/version.go in the repository with an exported
+  function "func Version() string" that returns "0.1.0". Use the file tools.
+  The file must be exactly at internal/version/version.go and the function
+  must be named Version.
+verification:
+  strategy: final
+  commands:
+    - findstr "func Version" internal\version\version.go
+    - go build ./...

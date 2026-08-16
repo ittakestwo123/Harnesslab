@@ -1,0 +1,13 @@
+id: add-cost-test
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: a774e51
+prompt: |
+  Add a unit test named TestCalculateZero to internal/cost/cost_test.go that
+  asserts New(nil).Calculate returns 0 for any provider/model/tokens. Use the
+  file tools to edit the test file. The test must be named exactly
+  TestCalculateZero.
+verification:
+  strategy: final
+  commands:
+    - findstr "TestCalculateZero" internal\cost\cost_test.go
+    - go test ./internal/cost/...

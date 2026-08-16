@@ -1,0 +1,13 @@
+id: add-spec-test
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: a774e51
+prompt: |
+  Add a unit test named TestParseMinimal to internal/harness/spec/spec_test.go
+  that parses the minimal valid spec "version: harnesslab/v1\nname: x\nmodel:\n  model: gpt-5"
+  and asserts Parse succeeds. Use the file tools to edit the test file.
+  The test must be named exactly TestParseMinimal.
+verification:
+  strategy: final
+  commands:
+    - findstr "TestParseMinimal" internal\harness\spec\spec_test.go
+    - go test ./internal/harness/spec/...

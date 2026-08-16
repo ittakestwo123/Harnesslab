@@ -1,0 +1,10 @@
+id: fix-changelog-typo
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: a774e51
+prompt: |
+  The CHANGELOG.md intro contains a typo: "All notabla changes" should be
+  "All notable changes". Fix the typo using the file tools.
+verification:
+  strategy: final
+  commands:
+    - findstr "All notable changes" CHANGELOG.md

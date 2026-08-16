@@ -1,0 +1,12 @@
+id: fix-workspace-changed
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: a774e51
+prompt: |
+  A regression was introduced in the workspace package: workspace.Diff.Changed
+  no longer counts stat-only or untracked-file changes, so TestDiffChanged
+  fails. Find the bug in workspace.Diff.Changed and fix it so ALL tests in
+  ./internal/workspace/... pass. Do not modify any test files.
+verification:
+  strategy: final
+  commands:
+    - go test ./internal/workspace/...
