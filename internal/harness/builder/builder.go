@@ -321,6 +321,7 @@ func (h *Harness) Run(ctx context.Context, task string, onEvent func(hlruntime.R
 	metrics.Success = status == store.StatusPassed
 
 	h.finish(ctx, status, metrics, diff, ver)
+	metrics = h.RunRecord.Metrics // finish() stamps CostUSD into the record
 	return &Result{
 		Run:           h.RunRecord,
 		Metrics:       metrics,
