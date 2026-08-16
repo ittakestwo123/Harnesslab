@@ -310,22 +310,24 @@ func (s *HarnessSpec) Validate() error {
 	default:
 		return fmt.Errorf("unsupported runtime type %q (supported: trpc, codex)", s.Runtime.Type)
 	}
-	switch s.Runtime.Codex.Sandbox {
-	case "":
-		s.Runtime.Codex.Sandbox = CodexSandboxReadOnly
-	case CodexSandboxReadOnly, CodexSandboxWorkspaceWrite, CodexSandboxDangerFullAccess:
-	default:
-		return fmt.Errorf("unsupported codex sandbox mode %q (supported: read-only, workspace-write, danger-full-access)", s.Runtime.Codex.Sandbox)
-	}
-	if s.Runtime.Codex.Binary == "" {
-		s.Runtime.Codex.Binary = "codex"
-	}
-	switch s.Runtime.Codex.AskForApproval {
-	case "":
-		s.Runtime.Codex.AskForApproval = CodexApprovalNever
-	case CodexApprovalNever, CodexApprovalOnRequest, CodexApprovalOnFailure:
-	default:
-		return fmt.Errorf("unsupported codex approval mode %q (supported: never, on-request, on-failure)", s.Runtime.Codex.AskForApproval)
+	if s.Runtime.Type == RuntimeCodex {
+		switch s.Runtime.Codex.Sandbox {
+		case "":
+			s.Runtime.Codex.Sandbox = CodexSandboxReadOnly
+		case CodexSandboxReadOnly, CodexSandboxWorkspaceWrite, CodexSandboxDangerFullAccess:
+		default:
+			return fmt.Errorf("unsupported codex sandbox mode %q (supported: read-only, workspace-write, danger-full-access)", s.Runtime.Codex.Sandbox)
+		}
+		switch s.Runtime.Codex.AskForApproval {
+		case "":
+			s.Runtime.Codex.AskForApproval = CodexApprovalNever
+		case CodexApprovalNever, CodexApprovalOnRequest, CodexApprovalOnFailure:
+		default:
+			return fmt.Errorf("unsupported codex approval mode %q (supported: never, on-request, on-failure)", s.Runtime.Codex.AskForApproval)
+		}
+		if s.Runtime.Codex.Binary == "" {
+			s.Runtime.Codex.Binary = "codex"
+		}
 	}
 	if s.Agent.Type == "" {
 		s.Agent.Type = AgentCoding

@@ -51,13 +51,21 @@ func (r *Runtime) Run(ctx context.Context, req hlruntime.RunRequest) (<-chan hlr
 	if bin == "" {
 		bin = "codex"
 	}
+	sandboxMode := cfg.Sandbox
+	if sandboxMode == "" {
+		sandboxMode = spec.CodexSandboxReadOnly
+	}
+	approval := cfg.AskForApproval
+	if approval == "" {
+		approval = spec.CodexApprovalNever
+	}
 
 	opts := []codex.Option{
 		codex.WithBin(bin),
 		// One fresh `codex exec` per run: no thread resume across runs.
 		codex.WithResumeEnabled(false),
-		codex.WithGlobalArgs("--sandbox", cfg.Sandbox),
-		codex.WithGlobalArgs("--ask-for-approval", cfg.AskForApproval),
+		codex.WithGlobalArgs("--sandbox", sandboxMode),
+		codex.WithGlobalArgs("--ask-for-approval", approval),
 		codex.WithWorkDir(req.WorkspaceRoot),
 		// The harness instruction becomes a prompt prefix (codex has no
 		// separate system-message channel).
