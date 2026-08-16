@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Codex CLI runtime adapter** (`runtime.type: codex`): drives a locally
+  installed `codex` binary via `codex exec --json` (prompt on stdin, JSONL
+  event stream parsed into the same `HarnessEvent` dialect). Configured via
+  `runtime.codex` (binary, model, sandbox, ask_for_approval, extra_args, env).
+  HarnessLab core is now proven runtime-agnostic: same workspace, trace,
+  verification, cost and benchmark pipeline on tRPC-Agent-Go and Codex CLI.
+  Offline replay remains a trpc-runtime feature.
+- Shared runner/normalizer pipeline (`trpc.RunFrameworkAgent`) so every
+  runtime adapter emits the same normalized events and metrics.
+
 ## [v0.3.0-alpha] - 2026-08-16
 
 Benchmark v3 milestone: a larger, categorized, statistically rigorous public
