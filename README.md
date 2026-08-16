@@ -13,7 +13,48 @@ An open-source Go platform for **AI agent harness engineering**, built on top of
 > optimizable **harness**.
 
 [![CI](https://github.com/ittakestwo123/Harnesslab/actions/workflows/ci.yml/badge.svg)](https://github.com/ittakestwo123/Harnesslab/actions/workflows/ci.yml)
+[![Go](https://img.shields.io/badge/go-1.25-blue)](https://go.dev)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/ittakestwo123/Harnesslab?include_prereleases&label=release)](https://github.com/ittakestwo123/Harnesslab/releases)
+
+---
+
+## Demo (12 seconds)
+
+![HarnessLab demo](docs/demo.gif)
+
+> Replay a coding-agent run without calling the model API.
+
+```text
+Live Agent Run      ~4s     (real DeepSeek model + tools)
+Offline Replay      16ms    (all model + tool calls served from the store)
+External Calls      0
+Verification        PASS    (recorded workspace changes re-applied)
+```
+
+## Installation
+
+**Option A — binary (no Go required):** download the latest release for your
+platform from the [Releases page](https://github.com/ittakestwo123/Harnesslab/releases)
+(`harnesslab-<version>-linux|darwin|windows-<arch>`), unpack and put `harness`
+on your `PATH`.
+
+**Option B — build from source (Go 1.25+):**
+
+```bash
+git clone https://github.com/ittakestwo123/Harnesslab.git
+cd Harnesslab
+go build -o harness ./cmd/harness
+./harness --version   # harness version 0.3.0-alpha
+```
+
+Then set your model key and go:
+
+```bash
+export DEEPSEEK_API_KEY=sk-...   # or OPENAI_API_KEY for provider: openai
+harness init                     # creates .harness/harness.yaml
+harness run "fix the failing parser tests" --repo https://github.com/octocat/Hello-World.git
+```
 
 ---
 
