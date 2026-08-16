@@ -1,0 +1,167 @@
+{
+  "id": "bench-3ffe144a",
+  "started_at": "2026-08-16T22:26:33.5977984+08:00",
+  "finished_at": "2026-08-16T22:27:15.5732887+08:00",
+  "variants": [
+    {
+      "variant": "planning=none+tools_shell=false",
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "errored": 0,
+      "input_tokens": 45337,
+      "output_tokens": 1384,
+      "model_calls": 12,
+      "tool_calls": 10,
+      "duration_ms": 15434,
+      "verification_passed": 2,
+      "workspace_changed": 2,
+      "runs": [
+        {
+          "run_id": "run-6f880361",
+          "task_id": "add-cost-test",
+          "variant": "planning=none+tools_shell=false",
+          "status": "passed",
+          "tokens": 21867,
+          "model_calls": 6,
+          "tool_calls": 5,
+          "duration_ms": 7458,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-b4368ec3",
+          "task_id": "add-spec-test",
+          "variant": "planning=none+tools_shell=false",
+          "status": "passed",
+          "tokens": 24854,
+          "model_calls": 6,
+          "tool_calls": 5,
+          "duration_ms": 7976,
+          "verification_passed": true,
+          "workspace_changed": true
+        }
+      ]
+    },
+    {
+      "variant": "planning=none+tools_shell=true",
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "errored": 0,
+      "input_tokens": 37626,
+      "output_tokens": 1197,
+      "model_calls": 10,
+      "tool_calls": 8,
+      "duration_ms": 14780,
+      "verification_passed": 2,
+      "workspace_changed": 2,
+      "runs": [
+        {
+          "run_id": "run-82acbf45",
+          "task_id": "add-cost-test",
+          "variant": "planning=none+tools_shell=true",
+          "status": "passed",
+          "tokens": 23272,
+          "model_calls": 6,
+          "tool_calls": 5,
+          "duration_ms": 9285,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-6aaeea92",
+          "task_id": "add-spec-test",
+          "variant": "planning=none+tools_shell=true",
+          "status": "passed",
+          "tokens": 15551,
+          "model_calls": 4,
+          "tool_calls": 3,
+          "duration_ms": 5495,
+          "verification_passed": true,
+          "workspace_changed": true
+        }
+      ]
+    },
+    {
+      "variant": "planning=todo+tools_shell=true",
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "errored": 0,
+      "input_tokens": 37408,
+      "output_tokens": 1163,
+      "model_calls": 10,
+      "tool_calls": 11,
+      "duration_ms": 14713,
+      "verification_passed": 2,
+      "workspace_changed": 2,
+      "runs": [
+        {
+          "run_id": "run-096cc38e",
+          "task_id": "add-cost-test",
+          "variant": "planning=todo+tools_shell=true",
+          "status": "passed",
+          "tokens": 22777,
+          "model_calls": 6,
+          "tool_calls": 7,
+          "duration_ms": 9161,
+          "verification_passed": true,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-578a3e47",
+          "task_id": "add-spec-test",
+          "variant": "planning=todo+tools_shell=true",
+          "status": "passed",
+          "tokens": 15794,
+          "model_calls": 4,
+          "tool_calls": 4,
+          "duration_ms": 5552,
+          "verification_passed": true,
+          "workspace_changed": true
+        }
+      ]
+    },
+    {
+      "variant": "planning=todo+tools_shell=false",
+      "total": 2,
+      "passed": 1,
+      "failed": 1,
+      "errored": 0,
+      "input_tokens": 63088,
+      "output_tokens": 2228,
+      "model_calls": 15,
+      "tool_calls": 15,
+      "duration_ms": 20435,
+      "verification_passed": 1,
+      "workspace_changed": 2,
+      "runs": [
+        {
+          "run_id": "run-299e48e6",
+          "task_id": "add-cost-test",
+          "variant": "planning=todo+tools_shell=false",
+          "status": "failed",
+          "tokens": 39753,
+          "model_calls": 9,
+          "tool_calls": 9,
+          "duration_ms": 13406,
+          "verification_passed": false,
+          "workspace_changed": true
+        },
+        {
+          "run_id": "run-7256dab0",
+          "task_id": "add-spec-test",
+          "variant": "planning=todo+tools_shell=false",
+          "status": "passed",
+          "tokens": 25563,
+          "model_calls": 6,
+          "tool_calls": 6,
+          "duration_ms": 7029,
+          "verification_passed": true,
+          "workspace_changed": true
+        }
+      ]
+    }
+  ]
+}

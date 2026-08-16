@@ -168,14 +168,18 @@ environment drift detected (1 mismatches)
 ## Public benchmark
 
 `benchmarks/` contains a reproducible coding-agent benchmark: 10 tasks
-against the seeded `bench/tasks-v1` commit of this repository (4 real code
-regressions caught by failing tests, 2 typos, 2 add-a-test, 2 add-a-feature),
-a base harness with DeepSeek pricing, and a 2×2 variant matrix. Every task is
-verified by real repository state:
+against the seeded `bench/tasks-v2` commit `075550a` of this repository
+(4 real code regressions caught by failing tests, 2 typos, 2 add-a-test,
+2 add-a-feature), a base harness with DeepSeek pricing, and a 2×2 variant
+matrix. Every task is verified by real repository state:
 
 ```bash
 harness bench benchmarks/tasks --config benchmarks/harness.yaml --matrix benchmarks/matrix.yaml
 ```
+
+Latest 40-run result (2026-08-16, DeepSeek `deepseek-chat`):
+**39/40 passes, USD 0.38 total** — see
+[benchmarks/results/README.md](benchmarks/results/README.md).
 
 See [benchmarks/README.md](benchmarks/README.md).
 
