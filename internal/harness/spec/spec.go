@@ -21,6 +21,20 @@ const (
 	// RuntimeTRPC is the tRPC-Agent-Go runtime type.
 	RuntimeTRPC = "trpc"
 
+	// RuntimeCodex is the Codex CLI runtime type: a locally installed
+	// `codex` binary driven via `codex exec --json`.
+	RuntimeCodex = "codex"
+
+	// Codex sandbox modes (codex CLI --sandbox).
+	CodexSandboxReadOnly         = "read-only"
+	CodexSandboxWorkspaceWrite   = "workspace-write"
+	CodexSandboxDangerFullAccess = "danger-full-access"
+
+	// Codex approval modes (codex CLI --ask-for-approval).
+	CodexApprovalNever     = "never"
+	CodexApprovalOnRequest = "on-request"
+	CodexApprovalOnFailure = "on-failure"
+
 	// AgentCoding marks a coding agent harness.
 	AgentCoding = "coding"
 
@@ -60,8 +74,31 @@ type HarnessSpec struct {
 
 // RuntimeSpec selects the agent runtime and its version.
 type RuntimeSpec struct {
-	Type    string `yaml:"type"`
-	Version string `yaml:"version,omitempty"`
+	Type    string    `yaml:"type"`
+	Version string    `yaml:"version,omitempty"`
+	Codex   CodexSpec `yaml:"codex,omitempty"`
+}
+
+// CodexSpec configures the Codex CLI runtime (`runtime.type: codex`).
+// The runtime drives a locally installed `codex` binary via
+// `codex exec --json`; the prompt is written to stdin and stdout is parsed
+// as a JSONL event stream by the runtime adapter.
+type CodexSpec struct {
+	// Binary is the codex executable path (default "codex").
+	Binary string `yaml:"binary,omitempty"`
+	// Model overrides the codex model (passed as --model to codex exec).
+	Model string `yaml:"model,omitempty"`
+	// Sandbox is the codex CLI sandbox mode: read-only (default) |
+	// workspace-write | danger-full-access.
+	Sandbox string `yaml:"sandbox,omitempty"`
+	// AskForApproval controls codex approval prompts: never (default) |
+	// on-request | on-failure.
+	AskForApproval string `yaml:"ask_for_approval,omitempty"`
+	// ExtraArgs are appended after `exec` (before --json), e.g. --full-auto.
+	ExtraArgs []string `yaml:"extra_args,omitempty"`
+	// Env adds KEY=VALUE variables to the codex process environment (e.g.
+	// CODEX_HOME=... to select an isolated codex home/profile).
+	Env []string `yaml:"env,omitempty"`
 }
 
 // AgentSpec selects the agent flavour and optional custom instruction.
@@ -268,8 +305,27 @@ func (s *HarnessSpec) Validate() error {
 	if s.Runtime.Type == "" {
 		s.Runtime.Type = RuntimeTRPC
 	}
-	if s.Runtime.Type != RuntimeTRPC {
-		return fmt.Errorf("unsupported runtime type %q (want %q)", s.Runtime.Type, RuntimeTRPC)
+	switch s.Runtime.Type {
+	case RuntimeTRPC, RuntimeCodex:
+	default:
+		return fmt.Errorf("unsupported runtime type %q (supported: trpc, codex)", s.Runtime.Type)
+	}
+	switch s.Runtime.Codex.Sandbox {
+	case "":
+		s.Runtime.Codex.Sandbox = CodexSandboxReadOnly
+	case CodexSandboxReadOnly, CodexSandboxWorkspaceWrite, CodexSandboxDangerFullAccess:
+	default:
+		return fmt.Errorf("unsupported codex sandbox mode %q (supported: read-only, workspace-write, danger-full-access)", s.Runtime.Codex.Sandbox)
+	}
+	if s.Runtime.Codex.Binary == "" {
+		s.Runtime.Codex.Binary = "codex"
+	}
+	switch s.Runtime.Codex.AskForApproval {
+	case "":
+		s.Runtime.Codex.AskForApproval = CodexApprovalNever
+	case CodexApprovalNever, CodexApprovalOnRequest, CodexApprovalOnFailure:
+	default:
+		return fmt.Errorf("unsupported codex approval mode %q (supported: never, on-request, on-failure)", s.Runtime.Codex.AskForApproval)
 	}
 	if s.Agent.Type == "" {
 		s.Agent.Type = AgentCoding
