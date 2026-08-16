@@ -46,18 +46,6 @@ func (r *Runtime) Run(ctx context.Context, req hlruntime.RunRequest) (<-chan hlr
 		return nil, err
 	}
 
-	if req.UserID == "" {
-		req.UserID = "harness"
-	}
-	if req.SessionID == "" {
-		req.SessionID = req.RunID
-	}
-
-	gen := model.GenerationConfig{Stream: true}
-	if r.spec.Model.Temperature != nil {
-		gen.Temperature = r.spec.Model.Temperature
-	}
-
 	// Replay wiring: wrap the model for model replay and attach tool
 	// callbacks for tool replay/recording.
 	var canon *replay.Canonicalizer
@@ -73,8 +61,8 @@ func (r *Runtime) Run(ctx context.Context, req hlruntime.RunRequest) (<-chan hlr
 
 	opts := []llmagent.Option{
 		llmagent.WithModel(m),
-		llmagent.WithInstruction(buildInstruction(r.spec, req.WorkspaceRoot)),
-		llmagent.WithGenerationConfig(gen),
+		llmagent.WithInstruction(BuildInstruction(r.spec, req.WorkspaceRoot)),
+		llmagent.WithGenerationConfig(genConfig(r.spec)),
 	}
 	if len(r.tools) > 0 {
 		opts = append(opts, llmagent.WithTools(r.tools))
@@ -84,7 +72,34 @@ func (r *Runtime) Run(ctx context.Context, req hlruntime.RunRequest) (<-chan hlr
 	}
 	ag := llmagent.New(r.spec.Agent.Name, opts...)
 
-	rr := runner.NewRunner(r.spec.Name, ag,
+	return RunFrameworkAgent(ctx, r.spec, ag, req)
+}
+
+// genConfig maps the spec model settings to a framework generation config.
+func genConfig(s *spec.HarnessSpec) model.GenerationConfig {
+	gen := model.GenerationConfig{Stream: true}
+	if s.Model.Temperature != nil {
+		gen.Temperature = s.Model.Temperature
+	}
+	return gen
+}
+
+// RunFrameworkAgent runs an already-constructed framework agent through the
+// shared runner + normalizer pipeline: it applies user/session defaults, the
+// budget timeout, streams the framework events through the normalizer into
+// HarnessLab run events (run_start ... run_end), and aggregates per-run
+// metrics. Both the tRPC (llmagent) adapter and the Codex CLI adapter build
+// their own agent and delegate to this helper, so every runtime speaks the
+// same HarnessEvent dialect.
+func RunFrameworkAgent(ctx context.Context, s *spec.HarnessSpec, ag agent.Agent, req hlruntime.RunRequest) (<-chan hlruntime.RunEvent, error) {
+	if req.UserID == "" {
+		req.UserID = "harness"
+	}
+	if req.SessionID == "" {
+		req.SessionID = req.RunID
+	}
+
+	rr := runner.NewRunner(s.Name, ag,
 		runner.WithSessionService(inmemory.NewSessionService()),
 	)
 
@@ -98,7 +113,7 @@ func (r *Runtime) Run(ctx context.Context, req hlruntime.RunRequest) (<-chan hlr
 		// Budget timeout bounds the whole run; it must live inside the
 		// goroutine so it is not cancelled when Run returns.
 		runCtx := ctx
-		if d, err := r.spec.Timeout(); err == nil && d > 0 {
+		if d, err := s.Timeout(); err == nil && d > 0 {
 			var cancel context.CancelFunc
 			runCtx, cancel = context.WithTimeout(ctx, d)
 			defer cancel()
@@ -144,10 +159,12 @@ func newModel(m spec.ModelSpec) (model.Model, error) {
 	}
 }
 
-// buildInstruction compiles the harness's planning/verification/tool settings
+// BuildInstruction compiles the harness's planning/verification/tool settings
 // into the agent's system instruction. workspaceRoot enables adaptive-context
-// strategies (e.g. repo-map) that need to inspect the repository.
-func buildInstruction(s *spec.HarnessSpec, workspaceRoot string) string {
+// strategies (e.g. repo-map) that need to inspect the repository. The Codex
+// adapter uses the same text as a prompt prefix since the codex CLI has no
+// separate system-message channel.
+func BuildInstruction(s *spec.HarnessSpec, workspaceRoot string) string {
 	var b strings.Builder
 	b.WriteString("You are a coding agent working inside a repository workspace.")
 	if s.Agent.Instruction != "" {

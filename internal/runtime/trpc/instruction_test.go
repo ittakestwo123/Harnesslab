@@ -20,7 +20,7 @@ func parseSpec(t *testing.T, yaml string) *spec.HarnessSpec {
 
 func TestBuildInstructionBase(t *testing.T) {
 	s := parseSpec(t, "version: harnesslab/v1\nname: x\nmodel:\n  model: gpt-5\n")
-	instr := buildInstruction(s, "")
+	instr := BuildInstruction(s, "")
 	if !strings.Contains(instr, "coding agent") {
 		t.Fatalf("missing base instruction: %q", instr)
 	}
@@ -31,7 +31,7 @@ func TestBuildInstructionBase(t *testing.T) {
 
 func TestBuildInstructionPlanningAndVerification(t *testing.T) {
 	s := parseSpec(t, "version: harnesslab/v1\nname: x\nmodel:\n  model: gpt-5\nplanning:\n  strategy: todo\nverification:\n  commands:\n    - go test ./...\n")
-	instr := buildInstruction(s, "")
+	instr := BuildInstruction(s, "")
 	if !strings.Contains(instr, "Planning:") || !strings.Contains(instr, "go test ./...") {
 		t.Fatalf("missing planning/verification sections: %q", instr)
 	}
@@ -50,7 +50,7 @@ func TestBuildInstructionRepoMap(t *testing.T) {
 	}
 
 	s := parseSpec(t, "version: harnesslab/v1\nname: x\nmodel:\n  model: gpt-5\ncontext:\n  strategy: repo-map\n")
-	instr := buildInstruction(s, root)
+	instr := BuildInstruction(s, root)
 	if !strings.Contains(instr, "Repository map") {
 		t.Fatalf("missing repository map section: %q", instr)
 	}
@@ -65,7 +65,7 @@ func TestBuildInstructionRepoMap(t *testing.T) {
 
 func TestBuildInstructionRepoMapNoRoot(t *testing.T) {
 	s := parseSpec(t, "version: harnesslab/v1\nname: x\nmodel:\n  model: gpt-5\ncontext:\n  strategy: repo-map\n")
-	instr := buildInstruction(s, "")
+	instr := BuildInstruction(s, "")
 	if strings.Contains(instr, "Repository map") {
 		t.Fatalf("repo map rendered without root: %q", instr)
 	}
@@ -73,7 +73,7 @@ func TestBuildInstructionRepoMapNoRoot(t *testing.T) {
 
 func TestBuildInstructionSkills(t *testing.T) {
 	s := parseSpec(t, "version: harnesslab/v1\nname: x\nmodel:\n  model: gpt-5\nskills:\n  enabled: true\n  list:\n    - \"debug: run the failing test, read the error, then bisect\"\n    - \"verify: always run go test after editing\"\n")
-	instr := buildInstruction(s, "")
+	instr := BuildInstruction(s, "")
 	if !strings.Contains(instr, "Skills (follow these working procedures):") {
 		t.Fatalf("missing skills section: %q", instr)
 	}
@@ -84,7 +84,7 @@ func TestBuildInstructionSkills(t *testing.T) {
 
 func TestBuildInstructionSkillsDisabled(t *testing.T) {
 	s := parseSpec(t, "version: harnesslab/v1\nname: x\nmodel:\n  model: gpt-5\nskills:\n  enabled: false\n  list:\n    - \"debug: x\"\n")
-	instr := buildInstruction(s, "")
+	instr := BuildInstruction(s, "")
 	if strings.Contains(instr, "Skills") {
 		t.Fatalf("disabled skills rendered: %q", instr)
 	}
