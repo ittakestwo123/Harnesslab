@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/ittakestwo123/Harnesslab/internal/harness/builder"
+	"github.com/ittakestwo123/Harnesslab/internal/harness/spec"
 	"github.com/ittakestwo123/Harnesslab/internal/store"
 )
 
@@ -163,7 +164,12 @@ func (s *Scheduler) runBatch(ctx context.Context, jobs []Job, report *Report, on
 // override, run the task, and report the outcome.
 func (s *Scheduler) runJob(ctx context.Context, job *Job) Outcome {
 	spec2 := *job.Variant.Spec
-	if job.Task.Verification.Strategy != "" || len(job.Task.Verification.Commands) > 0 {
+	// Task verification overrides the harness verification — except when the
+	// harness deliberately disables verification (ablation baseline H0): then
+	// the task's commands stay unapplied so the no-verification condition is
+	// actually exercised.
+	if (job.Task.Verification.Strategy != "" || len(job.Task.Verification.Commands) > 0) &&
+		spec2.Verification.Strategy != spec.VerificationNone {
 		spec2.Verification = job.Task.Verification
 	}
 	if job.Task.Success.IsSet() {

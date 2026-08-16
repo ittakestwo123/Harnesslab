@@ -1,0 +1,40 @@
+version: harnesslab/v1
+name: h6-full
+runtime:
+  type: trpc
+agent:
+  type: coding
+model:
+  provider: deepseek
+  model: deepseek-chat
+  temperature: 0.1
+planning:
+  strategy: todo
+context:
+  strategy: repo-map
+skills:
+  enabled: true
+  list:
+    - "debug: when a test fails, first read the failing assertion, then inspect the code under test, then make the smallest change and re-run the tests"
+    - "verify: after editing code, always run the package tests to confirm nothing broke"
+tools:
+  filesystem: true
+  shell: true
+verification:
+  strategy: final
+success:
+  require_verification_pass: true
+  require_workspace_change: true
+retry:
+  max_model_errors: 2
+  max_tool_errors: 2
+sandbox:
+  type: process
+  timeout: 120s
+budget:
+  timeout: 10m
+pricing:
+  deepseek:
+    deepseek-chat:
+      input_per_million: 0.27
+      output_per_million: 1.10

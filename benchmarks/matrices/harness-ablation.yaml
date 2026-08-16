@@ -1,0 +1,13 @@
+# Harness ablation matrix: H0 baseline then one component added at a time.
+# Each entry is a full harness.yaml relative to this file (../harnesses/).
+# Answers: does planning help? does verification reduce failure? does retry
+# recover? does repo-map context cut tokens? do skills raise success? is the
+# full harness worth its extra cost?
+harness:
+  - ../harnesses/h0-baseline.yaml
+  - ../harnesses/h1-planner.yaml
+  - ../harnesses/h2-verification.yaml
+  - ../harnesses/h3-retry.yaml
+  - ../harnesses/h4-context.yaml
+  - ../harnesses/h5-skills.yaml
+  - ../harnesses/h6-full.yaml
