@@ -5,32 +5,54 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 
 	"github.com/ittakestwo123/Harnesslab/internal/benchmark"
+	"github.com/ittakestwo123/Harnesslab/internal/harness/spec"
 	"github.com/ittakestwo123/Harnesslab/internal/optimize"
 	hlruntime "github.com/ittakestwo123/Harnesslab/internal/runtime"
 	"github.com/ittakestwo123/Harnesslab/internal/store"
 )
 
 // newOptimizeCmd analyzes run trajectories for failure patterns, suggests
-// harness candidates, and (with --report) computes the Pareto front of a
-// benchmark.
+// harness candidates, computes the Pareto front of a benchmark, and (with
+// --llm / --evaluate) runs the LLM Harness Optimizer loop: candidate
+// generation from failure analysis, dev evaluation, Pareto selection and
+// holdout validation with the Dev-only-win REJECT gate.
 func newOptimizeCmd() *cobra.Command {
 	var (
 		harnessDir  string
 		storeDriver string
 		reportFile  string
 		minRuns     int
+
+		configFile string
+		llmMode    bool
+		evaluate   bool
+		candidates int
+		tasksDir   string
+		tasksets   string
+		repeat     int
+		parallel   int
+		maxTokens  int64
+		timeout    time.Duration
 	)
 	cmd := &cobra.Command{
 		Use:   "optimize",
-		Short: "Analyze runs for failure patterns and suggest harness candidates",
+		Short: "Analyze runs, suggest harness candidates, run the LLM optimizer loop",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if harnessDir == "" {
 				harnessDir = ".harness"
+			}
+			if configFile == "" {
+				configFile = filepath.Join(harnessDir, "harness.yaml")
+			}
+			if tasksets == "" {
+				tasksets = "benchmarks/tasksets"
 			}
 			ctx := context.Background()
 
@@ -75,7 +97,7 @@ func newOptimizeCmd() *cobra.Command {
 					}
 				}
 				fmt.Printf("Optimize: benchmark %s, %d runs\n\n", rep.ID, len(runs))
-			} else {
+			} else if !llmMode && !evaluate {
 				st, err := openStore(harnessDir, storeDriver)
 				if err != nil {
 					return err
@@ -88,10 +110,6 @@ func newOptimizeCmd() *cobra.Command {
 				fmt.Printf("Optimize: analyzing %d runs in store\n\n", len(runs))
 			}
 
-			if len(runs) < minRuns {
-				return fmt.Errorf("optimize: only %d runs available, need at least %d (use --min-runs or a bench --report)", len(runs), minRuns)
-			}
-
 			// Load traces for every run (missing traces are skipped).
 			traces := map[string][]hlruntime.RunEvent{}
 			for _, r := range runs {
@@ -100,12 +118,26 @@ func newOptimizeCmd() *cobra.Command {
 				}
 			}
 
-			a := optimize.Analyze(runs, traces)
-			printAnalysis(a)
+			analysis := optimize.Analyze(runs, traces)
+			if !llmMode && !evaluate {
+				printAnalysis(analysis)
+				if len(points) > 0 {
+					front := optimize.Front(points)
+					printPareto(front, points)
+				}
+				return nil
+			}
 
-			if len(points) > 0 {
-				front := optimize.Front(points)
-				printPareto(front, points)
+			base, err := spec.Load(configFile)
+			if err != nil {
+				return err
+			}
+
+			switch {
+			case llmMode:
+				return runLLMGeneration(ctx, harnessDir, base, analysis, candidates)
+			case evaluate:
+				return runEvaluation(ctx, harnessDir, base, tasksDir, tasksets, parallel, maxTokens, timeout, repeat)
 			}
 			return nil
 		},
@@ -114,7 +146,101 @@ func newOptimizeCmd() *cobra.Command {
 	cmd.Flags().StringVar(&storeDriver, "store", "json", "run store backend: json or sqlite")
 	cmd.Flags().StringVar(&reportFile, "report", "", "benchmark report json to analyze and compute the Pareto front from")
 	cmd.Flags().IntVar(&minRuns, "min-runs", 1, "minimum number of runs to analyze")
+	cmd.Flags().StringVar(&configFile, "config", "", "base harness.yaml (default <harness-dir>/harness.yaml)")
+	cmd.Flags().BoolVar(&llmMode, "llm", false, "generate harness candidates with the LLM from the failure analysis")
+	cmd.Flags().IntVar(&candidates, "candidates", 3, "number of candidates the LLM should generate")
+	cmd.Flags().BoolVar(&evaluate, "evaluate", false, "evaluate candidates: dev bench -> Pareto -> holdout gate")
+	cmd.Flags().StringVar(&tasksDir, "tasks", "", "benchmark tasks directory (required with --evaluate)")
+	cmd.Flags().StringVar(&tasksets, "tasksets", "benchmarks/tasksets", "directory with dev.yaml + holdout.yaml tasksets")
+	cmd.Flags().IntVar(&repeat, "repeat", 1, "benchmark repetitions per task x harness (evaluation)")
+	cmd.Flags().IntVar(&parallel, "parallel", 2, "max concurrent agent runs (evaluation)")
+	cmd.Flags().Int64Var(&maxTokens, "max-tokens", 0, "stop after this many cumulative tokens (0 = unlimited)")
+	cmd.Flags().DurationVar(&timeout, "timeout", 0, "overall benchmark timeout (0 = none)")
 	return cmd
+}
+
+// runLLMGeneration writes LLM-generated candidates under .harness/candidates.
+func runLLMGeneration(ctx context.Context, harnessDir string, base *spec.HarnessSpec, a *optimize.Analysis, n int) error {
+	ensureEnvWarn(base.Model.Provider)
+	llm, err := newLLMClient(base.Model)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Optimize: generating %d candidates from %d runs (provider=%s model=%s)\n\n",
+		n, a.Runs, base.Model.Provider, base.Model.Name)
+	gens, err := optimize.GenerateCandidates(ctx, llm, base, a, n)
+	if err != nil {
+		if len(gens) == 0 {
+			return err
+		}
+		fmt.Println("WARNING:", err) // partial: some candidates were invalid and skipped
+	}
+	if err := writeCandidates(harnessDir, gens); err != nil {
+		return err
+	}
+	fmt.Printf("Candidates written to %s\n", filepath.Join(harnessDir, "candidates"))
+	return nil
+}
+
+// runEvaluation runs the dev -> Pareto -> holdout loop over existing
+// candidates and prints the recommendation.
+func runEvaluation(ctx context.Context, harnessDir string, base *spec.HarnessSpec,
+	tasksDir, tasksets string, parallel int, maxTokens int64, timeout time.Duration, repeat int) error {
+
+	if tasksDir == "" {
+		return fmt.Errorf("optimize: --evaluate requires --tasks <benchmark tasks dir>")
+	}
+	cands, err := optimize.LoadCandidates(filepath.Join(harnessDir, "candidates"))
+	if err != nil && len(cands) == 0 {
+		return err
+	}
+	if len(cands) == 0 {
+		return fmt.Errorf("optimize: no candidates under %s (run `harness optimize --llm` first)", filepath.Join(harnessDir, "candidates"))
+	}
+	fmt.Printf("Optimize: evaluating %d candidate(s) + baseline\n", len(cands))
+	variants := candidateVariants(base, cands)
+
+	devSet := filepath.Join(tasksets, "dev.yaml")
+	holdSet := filepath.Join(tasksets, "holdout.yaml")
+
+	fmt.Println("\n[1/3] dev benchmark (baseline + candidates)...")
+	devRep, err := runBenchTasks(ctx, tasksDir, devSet, harnessDir, variants, parallel, maxTokens, timeout, repeat)
+	if err != nil {
+		return err
+	}
+	devPath := filepath.Join(harnessDir, "bench", "optimize-dev-"+devRep.ID+".json")
+	if err := devRep.WriteJSON(devPath); err != nil {
+		return err
+	}
+	fmt.Printf("  dev report: %s\n", devPath)
+	devRes := evalResults(devRep)
+
+	fmt.Println("[2/3] Pareto selection on dev results...")
+	front := optimize.SelectCandidates(devRes)
+	selected := map[string]bool{"baseline": true}
+	for _, f := range front {
+		selected[f.Variant] = true
+	}
+	var holdVariants []benchmark.Variant
+	for _, v := range variants {
+		if selected[v.Name] {
+			holdVariants = append(holdVariants, v)
+		}
+	}
+	fmt.Println("[3/3] holdout benchmark (baseline + selected candidates)...")
+	holdRep, err := runBenchTasks(ctx, tasksDir, holdSet, harnessDir, holdVariants, parallel, maxTokens, timeout, repeat)
+	if err != nil {
+		return err
+	}
+	holdPath := filepath.Join(harnessDir, "bench", "optimize-holdout-"+holdRep.ID+".json")
+	if err := holdRep.WriteJSON(holdPath); err != nil {
+		return err
+	}
+	fmt.Printf("  holdout report: %s\n", holdPath)
+
+	rec := optimize.Recommend(devRes, evalResults(holdRep))
+	printRecommendation(rec)
+	return nil
 }
 
 func printAnalysis(a *optimize.Analysis) {
