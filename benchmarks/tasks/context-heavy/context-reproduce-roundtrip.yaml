@@ -1,0 +1,18 @@
+id: context-reproduce-roundtrip
+category: context-heavy
+set: dev
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Read internal/reproduce/export.go, internal/reproduce/envcheck.go and
+  internal/reproduce/envcheck_test.go first to learn the Environment type
+  (defined in this package), the Capture function and EnvFromJSON. Then add
+  test TestEnvironmentJSONRoundTrip to envcheck_test.go that captures the
+  current environment with Capture(), marshals it to JSON, decodes it back
+  with EnvFromJSON and asserts the decoded value equals the original. Use the
+  file tools to edit envcheck_test.go.
+verification:
+  strategy: final
+  commands:
+    - findstr "func TestEnvironmentJSONRoundTrip" internal\reproduce\envcheck_test.go
+    - go test ./internal/reproduce/...

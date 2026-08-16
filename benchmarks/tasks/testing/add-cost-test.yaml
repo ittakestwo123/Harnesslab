@@ -1,4 +1,6 @@
 id: add-cost-test
+category: testing
+set: holdout
 repo: https://github.com/ittakestwo123/Harnesslab.git
 commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
 prompt: |

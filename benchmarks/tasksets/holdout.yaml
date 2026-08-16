@@ -1,0 +1,12 @@
+id: holdout
+name: holdout set (final evaluation)
+tasks:
+  - add-cost-test
+  - concurrency-store-writes
+  - context-spec-validate-pricing
+  - fix-replay-hash
+  - fix-workspace-changed
+  - m-version-wire
+  - r-spec-rename-price
+  - tool-grep-callers
+  - t-report-variant-dedup

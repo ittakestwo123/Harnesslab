@@ -1,0 +1,14 @@
+id: tool-build-verify
+category: tool-heavy
+set: dev
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Use the exec_command tool to run go build ./... from the repository root
+  and confirm the whole module compiles. Then create BUILD.md at the
+  repository root containing exactly the line "build: OK". Use the file tools
+  to create BUILD.md.
+verification:
+  strategy: final
+  commands:
+    - 'findstr "build: OK" BUILD.md'

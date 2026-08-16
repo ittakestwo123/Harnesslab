@@ -1,0 +1,14 @@
+id: basic-add-changelog-entry
+category: basic
+set: dev
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Add a changelog entry to CHANGELOG.md: insert the line "### Added -
+  Benchmark v3 task categories" directly under the existing "## [Unreleased]"
+  heading (leave a blank line between the heading and the new line). Use the
+  file tools to edit CHANGELOG.md.
+verification:
+  strategy: final
+  commands:
+    - findstr "Benchmark v3 task categories" CHANGELOG.md

@@ -1,0 +1,17 @@
+id: r-spec-rename-price
+category: refactor
+set: holdout
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Rename the method ModelPrice on the PricingSpec type in
+  internal/harness/spec/spec.go to Price and update every caller in the
+  repository (internal/cost/cost.go calls c.pricing.ModelPrice). Do not change
+  any other behavior or any test files. Use the file tools. All tests in
+  ./internal/harness/spec/... and ./internal/cost/... must still pass.
+verification:
+  strategy: final
+  commands:
+    - findstr "func (p PricingSpec) Price" internal\harness\spec\spec.go
+    - go test ./internal/harness/spec/...
+    - go test ./internal/cost/...

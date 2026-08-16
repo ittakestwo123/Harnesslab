@@ -1,0 +1,17 @@
+id: tool-git-find-seed
+category: tool-heavy
+set: dev
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Use the exec_command tool to run git log --oneline -20 from the repository
+  root and inspect the recent commit history. Find the commit whose one-line
+  message contains the phrase "seed intentional regressions". Then create a
+  file NOTES.md at the repository root and write the short hash of that commit
+  followed by its full one-line message (the line exactly as git log printed
+  it). Use the file tools to create NOTES.md.
+verification:
+  strategy: final
+  commands:
+    - findstr "075550a" NOTES.md
+    - findstr "seed intentional regressions" NOTES.md

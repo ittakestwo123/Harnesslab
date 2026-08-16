@@ -1,0 +1,18 @@
+id: m-version-wire
+category: multi-file
+set: holdout
+repo: https://github.com/ittakestwo123/Harnesslab.git
+commit: 075550a6f3ec01f10eb846d8e61181e4495f082b
+prompt: |
+  Create a new package internal/version with a file internal/version/version.go
+  containing exactly `func Version() string` that returns "0.3.0". Then wire it
+  into the CLI: in internal/cli/root.go, import the new package and change the
+  version variable initializer from the hardcoded literal to a call of
+  version.Version() (keep the variable name `version`). Use the file tools.
+  `go build ./...` must succeed.
+verification:
+  strategy: final
+  commands:
+    - findstr "func Version" internal\version\version.go
+    - findstr "version.Version" internal\cli\root.go
+    - go build ./...

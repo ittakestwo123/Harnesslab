@@ -32,7 +32,7 @@ func NewRootCmd() *cobra.Command {
 
 // version is the CLI version. It can be overridden at build time with
 // -ldflags "-X github.com/ittakestwo123/Harnesslab/internal/cli.version=...".
-var version = "0.2.0-alpha"
+var version = "0.3.0-alpha"
 
 func newInitCmd() *cobra.Command {
 	var dir string
