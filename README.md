@@ -138,6 +138,55 @@ Harness Engineering Platform**, not a tRPC-Agent-Go tool. Offline replay is a
 trpc-runtime feature; codex runs are fully traced but not offline-replayable
 (the CLI is the runtime).
 
+## LLM Harness Optimizer
+
+The optimizer turns benchmark results into better harnesses. The loop follows
+the roadmap's dev → select → holdout discipline:
+
+```text
+Current Harness ──► Dev Benchmark ──► Failure Analyzer ──► LLM Candidate Generator
+                                                              │
+                                                    ┌─────────┼─────────┐
+                                                    ▼         ▼         ▼
+                                               candidate-001..003 (yaml + metadata)
+                                                              │
+                                                              ▼
+                                                   Dev Benchmark (candidates)
+                                                              │
+                                                              ▼
+                                                       Pareto Selection
+                                                              │
+                                                              ▼
+                                                    Holdout Validation
+                                                              │
+                                                     Dev-only win? ──► REJECT
+                                                              │
+                                                              ▼
+                                                       Recommended Harness
+```
+
+```bash
+# 1. Generate candidates from the failure analysis (needs DEEPSEEK_API_KEY /
+#    OPENAI_API_KEY for the model named in your harness)
+harness optimize --llm --candidates 3 \
+  --report .harness/bench/bench-<id>.json \
+  --config benchmarks/harness.yaml --harness-dir .harness
+
+# 2. Evaluate: dev bench -> Pareto -> holdout gate -> recommendation
+harness optimize --evaluate \
+  --config benchmarks/harness.yaml --harness-dir .harness \
+  --tasks benchmarks/tasks --tasksets benchmarks/tasksets \
+  --repeat 1 --parallel 2
+```
+
+- Candidates are full `harnesslab/v1` specs written to
+  `.harness/candidates/candidate-XXX.yaml` — **never** over your `harness.yaml`.
+- Each candidate carries `metadata` (parent, reason, expected_effect) so the
+  result of every change is auditable.
+- A candidate that improves the dev set but regresses the holdout set is
+  **REJECTED** (a Dev-only win is not trustworthy); only candidates that hold
+  on holdout are recommended.
+
 ## Sandbox
 
 ```yaml
@@ -284,7 +333,7 @@ Trace:
 | `harness snapshot` | Write `.harness/harness.lock` for the current harness |
 | `harness export <run-id>` | Export a reproducible `.harness` bundle |
 | `harness reproduce <run-id\|bundle>` | Re-run offline from recorded spec + replay store |
-| `harness optimize` | Failure analysis, candidate changes, Pareto front |
+| `harness optimize` | Failure analysis, **LLM candidate generation (`--llm`)**, dev/Pareto/holdout evaluation (`--evaluate`) |
 
 ## Architecture
 

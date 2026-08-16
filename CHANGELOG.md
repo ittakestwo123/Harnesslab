@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **LLM Harness Optimizer**: `harness optimize --llm` generates full harness
+  candidates from the failure analysis via the configured LLM
+  (DeepSeek/OpenAI), validates them against the real spec schema (hallucinated
+  fields are skipped), and writes them to `.harness/candidates/candidate-XXX.yaml`
+  with metadata (parent, reason, expected_effect) — never over `harness.yaml`.
+  `harness optimize --evaluate` runs the dev benchmark (baseline + candidates),
+  selects the Pareto front (pass up, tokens/cost down), validates the selected
+  candidates on the holdout set and **rejects Dev-only wins** (dev improves but
+  holdout regresses). Evaluation reuses the bench scheduler and dev/holdout
+  tasksets.
 - **Codex CLI runtime adapter** (`runtime.type: codex`): drives a locally
   installed `codex` binary via `codex exec --json` (prompt on stdin, JSONL
   event stream parsed into the same `HarnessEvent` dialect). Configured via
@@ -18,6 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Offline replay remains a trpc-runtime feature.
 - Shared runner/normalizer pipeline (`trpc.RunFrameworkAgent`) so every
   runtime adapter emits the same normalized events and metrics.
+
+### Fixed
+
+- Codex runtime defaults (binary/sandbox/approval) are only filled for
+  `runtime.type: codex`, so marshaled trpc harnesses no longer carry a
+  `runtime.codex` block.
 
 ## [v0.3.0-alpha] - 2026-08-16
 
