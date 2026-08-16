@@ -19,7 +19,7 @@ type RunSummary struct {
 	RunID        string       `json:"run_id"`
 	TaskID       string       `json:"task_id"`
 	Variant      string       `json:"variant"`
-	Repeat       int          `json:"repeat,omitempty"`
+	Repeat       int          `json:"repeat"`
 	Status       store.Status `json:"status"`
 	Tokens       int64        `json:"tokens"`
 	InputTokens  int64        `json:"input_tokens,omitempty"`
@@ -302,7 +302,7 @@ func (r *Report) RenderStats() string {
 			f2(v.Stats.InputTokens.Mean),
 			f2(v.Stats.InputTokens.P50),
 			f2(v.Stats.InputTokens.P90),
-			f2(v.Stats.CostUSD.Mean),
+			costFmt(v.Stats.CostUSD.Mean),
 			f2(v.Stats.LatencyMS.Mean),
 			f2(v.Stats.LatencyMS.P90),
 			fmt.Sprintf("%s..%s", f2(v.Stats.InputTokens.CI95Lo), f2(v.Stats.InputTokens.CI95Hi)),
@@ -316,4 +316,12 @@ func f2(v float64) string {
 		return "-"
 	}
 	return fmt.Sprintf("%.1f", v)
+}
+
+// costFmt prints USD costs with enough precision for benchmark-scale values.
+func costFmt(v float64) string {
+	if v == 0 {
+		return "-"
+	}
+	return fmt.Sprintf("$%.4f", v)
 }
