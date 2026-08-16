@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: HarnessLab README
+    url: https://github.com/ittakestwo123/Harnesslab#readme
+    about: Read the documentation and demos before opening an issue
+  - name: Discussions
+    url: https://github.com/ittakestwo123/Harnesslab/discussions
+    about: Ask questions and discuss harness engineering experiments
