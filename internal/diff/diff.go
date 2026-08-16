@@ -1,6 +1,6 @@
 // Package diff implements Stage-4 trajectory comparison: it converts two
 // runs' event streams into comparable steps, aligns them, and locates the
-// first divergence 鈥?the earliest point where the two trajectories differ.
+// first divergence — the earliest point where the two trajectories differ.
 package diff
 
 import (

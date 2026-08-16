@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"trpc.group/trpc-go/trpc-agent-go/log"
 
@@ -73,7 +74,8 @@ func (w *Workspace) Snapshot(ctx context.Context, inst *workspace.Instance) (*wo
 	return &workspace.Snapshot{Commit: head, Status: status}, nil
 }
 
-// Diff captures the working-tree diff of inst.
+// Diff captures the working-tree diff of inst, including untracked files
+// (which `git diff` does not cover).
 func (w *Workspace) Diff(ctx context.Context, inst *workspace.Instance) (*workspace.Diff, error) {
 	patch, err := w.gitOut(ctx, inst.Root, "diff")
 	if err != nil {
@@ -83,7 +85,15 @@ func (w *Workspace) Diff(ctx context.Context, inst *workspace.Instance) (*worksp
 	if err != nil {
 		return nil, fmt.Errorf("workspace: diff --stat: %w", err)
 	}
-	return &workspace.Diff{Patch: patch, Stat: stat}, nil
+	var untracked []string
+	if out, err := w.gitOut(ctx, inst.Root, "ls-files", "--others", "--exclude-standard"); err == nil {
+		for _, line := range strings.Split(out, "\n") {
+			if line = strings.TrimSpace(line); line != "" {
+				untracked = append(untracked, line)
+			}
+		}
+	}
+	return &workspace.Diff{Patch: patch, Stat: stat, Untracked: untracked}, nil
 }
 
 // Destroy removes the worktree and the run's directory.

@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `success` section in HarnessSpec: `require_verification_pass` (default true)
+  and `require_workspace_change` (default false) so text-only hallucinated
+  answers can no longer fake a PASS
+- Structured `VerificationResult` (per-command results, exit codes, clipped
+  output, best-effort test pass/fail counts) persisted on run records
+- `workspace.Diff.Untracked` — new files created by the agent now count as a
+  workspace change (previously only `git diff` tracked changes)
+- Benchmark reports: `Ver` and `Chg` columns + per-run verification flags
+- Benchmark tasks can override the harness `success` criteria
+- Optimize: new `no_change` failure pattern ("repository task without
+  workspace changes — likely hallucinated output")
+
+### Fixed
+
+- Windows verification commands containing quotes were mangled by Go's
+  `cmd /c` argument quoting (e.g. `findstr "pattern" file` failed to match).
+  Commands now run through a temporary batch file, parsed exactly as typed.
+- Mojibake corruption of non-ASCII characters introduced during the module
+  path rename (em-dashes, arrows, section signs restored).
+
 ## [v0.1.0-alpha.1] - 2026-08-16
 
 First frozen baseline: the full Build → Trace → Replay → Diff → Benchmark →

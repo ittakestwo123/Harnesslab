@@ -62,10 +62,15 @@ func newOptimizeCmd() *cobra.Command {
 						if r.RunID == "" {
 							continue
 						}
-						runs = append(runs, &store.Run{ID: r.RunID, Task: r.TaskID, Metrics: store.Metrics{
-							ToolCalls:   r.ToolCalls,
-							ModelCalls:  r.ModelCalls,
-							InputTokens: r.Tokens,
+						// Report-derived runs are always repository tasks
+						// (bench tasks carry a repo), so mark Repository to
+						// enable the no_change pattern.
+						runs = append(runs, &store.Run{ID: r.RunID, Task: r.TaskID, Repository: "bench", Metrics: store.Metrics{
+							ToolCalls:          r.ToolCalls,
+							ModelCalls:         r.ModelCalls,
+							InputTokens:        r.Tokens,
+							WorkspaceChanged:   r.WorkspaceChanged,
+							VerificationPassed: r.VerificationPassed,
 						}})
 					}
 				}

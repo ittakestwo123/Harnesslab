@@ -114,7 +114,7 @@ func TestReportAggregation(t *testing.T) {
 		Job:     &Job{Task: &Task{ID: "t1"}, Variant: Variant{Name: "base"}},
 		RunID:   "run-1",
 		Status:  store.StatusPassed,
-		Metrics: store.Metrics{InputTokens: 100, OutputTokens: 50, ModelCalls: 2, ToolCalls: 1, DurationMS: 3000},
+		Metrics: store.Metrics{InputTokens: 100, OutputTokens: 50, ModelCalls: 2, ToolCalls: 1, DurationMS: 3000, VerificationPassed: true, WorkspaceChanged: true},
 	})
 	r.add(Outcome{
 		Job:     &Job{Task: &Task{ID: "t2"}, Variant: Variant{Name: "base"}},
@@ -136,6 +136,12 @@ func TestReportAggregation(t *testing.T) {
 	}
 	if base.InputTokens != 300 || base.OutputTokens != 110 || base.ModelCalls != 5 || base.ToolCalls != 3 {
 		t.Fatalf("base aggregates = %+v", base)
+	}
+	if base.VerPassed != 1 || base.ChgCount != 1 {
+		t.Fatalf("base ver/chg = %d/%d, want 1/1", base.VerPassed, base.ChgCount)
+	}
+	if !base.Runs[0].VerificationPassed || !base.Runs[0].WorkspaceChanged {
+		t.Fatalf("base run-1 summary = %+v", base.Runs[0])
 	}
 	todo := r.variant("planning=todo")
 	if todo.Total != 1 || todo.Errored != 1 {

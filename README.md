@@ -53,15 +53,21 @@ First divergence at step 1:
 harness diff <run-a> <run-b>
 ```
 
-## Demo 3 — Benchmark
+## Demo 3 — Verified Benchmark
+
+With `success.require_workspace_change` and a real verification command, a
+harness that only "answers" can no longer fake a PASS:
 
 ```text
-Harness                          Pass  Tokens    Models  Tools  Time
-planning=none+tools_shell=false  2/2   104       2       0      1.18s
-planning=none+tools_shell=true   2/2   14,880    9       7      6.48s
-planning=todo+tools_shell=true   2/2   15,082    9       7      6.18s
-planning=todo+tools_shell=false  2/2   357       2       0      2.44s
+Harness                          Pass  Total Ver  Tokens     Chg   Time
+planning=none+tools_shell=false  0/2   2     0    294        0     2.2s
+planning=none+tools_shell=true   2/2   2     2    1,263,751  2     4m0.6s
 ```
+
+The no-tools variant "passed" at 52 tokens in earlier demos by hallucinating;
+with verification enabled it correctly fails (no workspace change, no
+verification pass). The `Ver`/`Chg` columns separate a real PASS from a
+text-only answer.
 
 ```bash
 harness bench ./tasks --matrix matrix.yaml --parallel 2
@@ -95,6 +101,8 @@ It records the full agent trajectory and makes it:
 - **Benchmarkable** — task x harness-variant matrices on a worker pool
 - **Reproducible** — `.harness` bundles (spec + trace + replay store + env)
 - **Optimizable** — failure-pattern analysis and Pareto fronts
+- **Verifiable** — `success.require_verification_pass` + `success.require_workspace_change`
+  stop text-only hallucinated answers from faking a PASS
 
 ## Status
 

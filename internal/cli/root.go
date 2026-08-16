@@ -22,7 +22,7 @@ import (
 func NewRootCmd() *cobra.Command {
 	root := &cobra.Command{
 		Use:          "harness",
-		Short:        "HarnessLab 鈥?build, trace, replay, benchmark and evolve AI agent harnesses",
+		Short:        "HarnessLab — build, trace, replay, benchmark and evolve AI agent harnesses",
 		Version:      "0.1.0",
 		SilenceUsage: true,
 	}
@@ -200,13 +200,34 @@ func printSummary(r *builder.Result) {
 	fmt.Printf("Tool Calls  %d\n", r.Metrics.ToolCalls)
 	fmt.Printf("Model Calls %d\n", r.Metrics.ModelCalls)
 	fmt.Printf("Duration    %s\n", (time.Duration(r.Metrics.DurationMS) * time.Millisecond).Round(time.Millisecond))
-	fmt.Printf("Trace:\n%s\n", r.TracePath)
-	if r.VerificationErr != nil {
-		fmt.Printf("Verification: %v\n", r.VerificationErr)
+	if v := r.Verification; v != nil {
+		if v.Passed {
+			fmt.Printf("Verification PASS")
+		} else {
+			fmt.Printf("Verification FAIL")
+		}
+		if v.TestsPassed > 0 || v.TestsFailed > 0 {
+			fmt.Printf(" (%d passed / %d failed)", v.TestsPassed, v.TestsFailed)
+		}
+		fmt.Printf(" in %s\n", (time.Duration(v.DurationMS) * time.Millisecond).Round(time.Millisecond))
+		for _, c := range v.Commands {
+			if !c.Passed {
+				fmt.Printf("  FAIL %s (exit %d)\n", c.Command, c.ExitCode)
+				if c.Output != "" {
+					fmt.Printf("       %s\n", clipArgs(c.Output))
+				}
+			}
+		}
+	}
+	if r.Metrics.WorkspaceChanged {
+		fmt.Printf("Workspace   changed\n")
+	} else if r.WorkspaceDiff != nil {
+		fmt.Printf("Workspace   unchanged\n")
 	}
 	if r.WorkspaceDiff != nil && strings.TrimSpace(r.WorkspaceDiff.Stat) != "" {
 		fmt.Printf("Workspace diff:\n%s\n", r.WorkspaceDiff.Stat)
 	}
+	fmt.Printf("Trace:\n%s\n", r.TracePath)
 }
 
 func clipArgs(s string) string {

@@ -27,6 +27,33 @@ type Metrics struct {
 	ModelCalls   int
 	CostUSD      float64
 	DurationMS   int64
+	// VerificationPassed reports whether the verification commands passed.
+	VerificationPassed bool
+	// WorkspaceChanged reports whether the agent modified the workspace.
+	WorkspaceChanged bool
+}
+
+// CommandResult is the outcome of one verification command.
+type CommandResult struct {
+	Command  string `json:"command"`
+	Passed   bool   `json:"passed"`
+	ExitCode int    `json:"exit_code,omitempty"`
+	// Output is the clipped command output (stdout+stderr).
+	Output string `json:"output,omitempty"`
+}
+
+// VerificationResult captures the post-run verification outcome.
+type VerificationResult struct {
+	// Passed is true when all verification commands passed.
+	Passed bool `json:"passed"`
+	// Commands lists the per-command results.
+	Commands []CommandResult `json:"commands,omitempty"`
+	// WorkspaceChanged reports whether the agent modified the workspace.
+	WorkspaceChanged bool `json:"workspace_changed"`
+	// TestsPassed/Failed are best-effort counts parsed from test output.
+	TestsPassed int   `json:"tests_passed,omitempty"`
+	TestsFailed int   `json:"tests_failed,omitempty"`
+	DurationMS  int64 `json:"duration_ms,omitempty"`
 }
 
 // Run is the basic entity of HarnessLab.
@@ -48,6 +75,8 @@ type Run struct {
 	SpecYAML string `json:"spec_yaml,omitempty"`
 	// WorkspacePatch is the working-tree diff produced by the run.
 	WorkspacePatch string `json:"workspace_patch,omitempty"`
+	// Verification is the structured post-run verification outcome.
+	Verification VerificationResult `json:"verification,omitempty"`
 }
 
 // Store persists runs.

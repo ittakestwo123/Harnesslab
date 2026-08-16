@@ -5,6 +5,7 @@ package sqlitestore
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -37,7 +38,10 @@ CREATE TABLE IF NOT EXISTS runs (
 	cost_usd        REAL NOT NULL DEFAULT 0,
 	duration_ms     INTEGER NOT NULL DEFAULT 0,
 	spec_yaml       TEXT NOT NULL DEFAULT '',
-	workspace_patch TEXT NOT NULL DEFAULT ''
+	workspace_patch TEXT NOT NULL DEFAULT '',
+	verification_passed INTEGER NOT NULL DEFAULT 0,
+	workspace_changed   INTEGER NOT NULL DEFAULT 0,
+	verification        TEXT NOT NULL DEFAULT ''
 );
 CREATE TABLE IF NOT EXISTS events (
 	id        TEXT NOT NULL,
@@ -90,6 +94,9 @@ func (s *Store) migrate() error {
 	for _, c := range []struct{ name, typ string }{
 		{"spec_yaml", "TEXT NOT NULL DEFAULT ''"},
 		{"workspace_patch", "TEXT NOT NULL DEFAULT ''"},
+		{"verification_passed", "INTEGER NOT NULL DEFAULT 0"},
+		{"workspace_changed", "INTEGER NOT NULL DEFAULT 0"},
+		{"verification", "TEXT NOT NULL DEFAULT ''"},
 	} {
 		if cols[c.name] {
 			continue
@@ -130,34 +137,40 @@ func (s *Store) Close() error { return s.db.Close() }
 
 // CreateRun inserts a run.
 func (s *Store) CreateRun(ctx context.Context, run *store.Run) error {
+	verJSON, _ := json.Marshal(run.Verification)
 	_, err := s.db.ExecContext(ctx, `
 		INSERT INTO runs (id, task, harness_version, harness_name, repository, commit_sha,
 			workspace, trace_path, started_at, finished_at, status, success,
 			input_tokens, output_tokens, tool_calls, model_calls, cost_usd, duration_ms,
-			spec_yaml, workspace_patch)
-		VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+			spec_yaml, workspace_patch, verification_passed, workspace_changed, verification)
+		VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 		run.ID, run.Task, run.HarnessVersion, run.HarnessName, run.Repository, run.Commit,
 		run.Workspace, run.TracePath, unixMillis(run.StartedAt), unixMillis(run.FinishedAt),
 		string(run.Status), boolInt(run.Metrics.Success), run.Metrics.InputTokens,
 		run.Metrics.OutputTokens, run.Metrics.ToolCalls, run.Metrics.ModelCalls,
 		run.Metrics.CostUSD, run.Metrics.DurationMS, run.SpecYAML, run.WorkspacePatch,
+		boolInt(run.Metrics.VerificationPassed), boolInt(run.Metrics.WorkspaceChanged),
+		string(verJSON),
 	)
 	return wrap(err)
 }
 
 // UpdateRun replaces the run row.
 func (s *Store) UpdateRun(ctx context.Context, run *store.Run) error {
+	verJSON, _ := json.Marshal(run.Verification)
 	res, err := s.db.ExecContext(ctx, `
 		UPDATE runs SET task=?, harness_version=?, harness_name=?, repository=?, commit_sha=?,
 			workspace=?, trace_path=?, started_at=?, finished_at=?, status=?, success=?,
 			input_tokens=?, output_tokens=?, tool_calls=?, model_calls=?, cost_usd=?, duration_ms=?,
-			spec_yaml=?, workspace_patch=?
+			spec_yaml=?, workspace_patch=?, verification_passed=?, workspace_changed=?, verification=?
 		WHERE id=?`,
 		run.Task, run.HarnessVersion, run.HarnessName, run.Repository, run.Commit,
 		run.Workspace, run.TracePath, unixMillis(run.StartedAt), unixMillis(run.FinishedAt),
 		string(run.Status), boolInt(run.Metrics.Success), run.Metrics.InputTokens,
 		run.Metrics.OutputTokens, run.Metrics.ToolCalls, run.Metrics.ModelCalls,
-		run.Metrics.CostUSD, run.Metrics.DurationMS, run.SpecYAML, run.WorkspacePatch, run.ID,
+		run.Metrics.CostUSD, run.Metrics.DurationMS, run.SpecYAML, run.WorkspacePatch,
+		boolInt(run.Metrics.VerificationPassed), boolInt(run.Metrics.WorkspaceChanged),
+		string(verJSON), run.ID,
 	)
 	if err != nil {
 		return wrap(err)
@@ -175,7 +188,7 @@ func (s *Store) GetRun(ctx context.Context, id string) (*store.Run, error) {
 		SELECT id, task, harness_version, harness_name, repository, commit_sha, workspace,
 			trace_path, started_at, finished_at, status, success, input_tokens,
 			output_tokens, tool_calls, model_calls, cost_usd, duration_ms,
-			spec_yaml, workspace_patch
+			spec_yaml, workspace_patch, verification_passed, workspace_changed, verification
 		FROM runs WHERE id=?`, id)
 	run, err := scanRun(row)
 	if errors.Is(err, sql.ErrNoRows) {
@@ -190,7 +203,7 @@ func (s *Store) ListRuns(ctx context.Context) ([]*store.Run, error) {
 		SELECT id, task, harness_version, harness_name, repository, commit_sha, workspace,
 			trace_path, started_at, finished_at, status, success, input_tokens,
 			output_tokens, tool_calls, model_calls, cost_usd, duration_ms,
-			spec_yaml, workspace_patch
+			spec_yaml, workspace_patch, verification_passed, workspace_changed, verification
 		FROM runs ORDER BY started_at DESC`)
 	if err != nil {
 		return nil, wrap(err)
@@ -228,12 +241,15 @@ func scanRun(row scanner) (*store.Run, error) {
 		started, fin int64
 		status       string
 		success      int
+		verPassed    int
+		wsChanged    int
+		verJSON      string
 	)
 	if err := row.Scan(&r.ID, &r.Task, &r.HarnessVersion, &r.HarnessName, &r.Repository,
 		&r.Commit, &r.Workspace, &r.TracePath, &started, &fin, &status, &success,
 		&r.Metrics.InputTokens, &r.Metrics.OutputTokens, &r.Metrics.ToolCalls,
 		&r.Metrics.ModelCalls, &r.Metrics.CostUSD, &r.Metrics.DurationMS,
-		&r.SpecYAML, &r.WorkspacePatch); err != nil {
+		&r.SpecYAML, &r.WorkspacePatch, &verPassed, &wsChanged, &verJSON); err != nil {
 		return nil, wrap(err)
 	}
 	r.StartedAt = time.UnixMilli(started)
@@ -242,6 +258,11 @@ func scanRun(row scanner) (*store.Run, error) {
 	}
 	r.Status = store.Status(status)
 	r.Metrics.Success = success != 0
+	r.Metrics.VerificationPassed = verPassed != 0
+	r.Metrics.WorkspaceChanged = wsChanged != 0
+	if verJSON != "" {
+		_ = json.Unmarshal([]byte(verJSON), &r.Verification)
+	}
 	return &r, nil
 }
 

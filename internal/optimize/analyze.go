@@ -51,10 +51,13 @@ func Analyze(runs []*store.Run, traces map[string][]hlruntime.RunEvent) *Analysi
 		steps := diff.BuildSteps(events)
 
 		if r.Metrics.ToolCalls == 0 {
-			note("no_tools", "no tool calls 鈥?agent answered from knowledge", r.ID)
+			note("no_tools", "no tool calls — agent answered from knowledge", r.ID)
 		}
 		if r.Metrics.InputTokens > highTokenThreshold {
 			note("high_tokens", "input tokens above threshold (context explosion)", r.ID)
+		}
+		if r.Repository != "" && !r.Metrics.WorkspaceChanged {
+			note("no_change", "repository task without workspace changes — likely hallucinated output", r.ID)
 		}
 		if hasRepeatedTool(steps) {
 			note("repeated_tool", "identical tool call repeated in the same trajectory", r.ID)
@@ -117,6 +120,8 @@ func candidateFor(id string) string {
 	switch id {
 	case "no_tools":
 		return "Consider adding shell/filesystem tools or stronger tool-use instructions if the task requires repository access."
+	case "no_change":
+		return "Require workspace changes (success.require_workspace_change) so text-only hallucinated answers fail the run."
 	case "repeated_tool":
 		return "Add a duplicate-command guard (skip identical tool calls with unchanged args) to the harness."
 	case "high_tokens":

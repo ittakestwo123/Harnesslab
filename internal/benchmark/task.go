@@ -15,13 +15,16 @@ import (
 )
 
 // Task is one benchmark task: a repository, a prompt, and optional
-// verification that overrides the harness default.
+// verification/success criteria that override the harness defaults.
 type Task struct {
 	ID           string                `yaml:"id"`
 	Repo         string                `yaml:"repo"`
 	Commit       string                `yaml:"commit"`
 	Prompt       string                `yaml:"prompt"`
 	Verification spec.VerificationSpec `yaml:"verification"`
+	// Success overrides the harness success criteria (e.g. requiring the
+	// workspace to change) when set.
+	Success spec.SuccessSpec `yaml:"success"`
 }
 
 // Validate checks required fields.

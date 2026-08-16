@@ -3,7 +3,10 @@
 // workspaces can implement the same interface later.
 package workspace
 
-import "context"
+import (
+	"context"
+	"strings"
+)
 
 // Instance is a materialized, isolated workspace for one run.
 type Instance struct {
@@ -38,6 +41,18 @@ type Diff struct {
 	Patch string
 	// Stat is the diffstat summary.
 	Stat string
+	// Untracked lists new files created in the workspace (not covered by
+	// `git diff`).
+	Untracked []string
+}
+
+// Changed reports whether the workspace was actually modified: a non-empty
+// patch/stat or new untracked files.
+func (d *Diff) Changed() bool {
+	if d == nil {
+		return false
+	}
+	return strings.TrimSpace(d.Patch) != "" || strings.TrimSpace(d.Stat) != "" || len(d.Untracked) > 0
 }
 
 // Workspace creates and manages isolated workspaces.

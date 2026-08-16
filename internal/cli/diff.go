@@ -135,7 +135,7 @@ func printTrajectory(d *diff.Diff, full bool) {
 			fmt.Printf("  B: (end of trajectory)\n")
 		}
 	} else {
-		fmt.Printf("First divergence: none 鈥?identical trajectories\n")
+		fmt.Printf("First divergence: none — identical trajectories\n")
 	}
 }
 

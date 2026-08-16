@@ -53,7 +53,7 @@ func TestParetoFront(t *testing.T) {
 		{Variant: "a", Pass: 1.0, Tokens: 1000, DurationMS: 100},
 		{Variant: "b", Pass: 0.5, Tokens: 500, DurationMS: 50},   // dominated by a? pass lower, tokens lower... not dominated by a (a has higher tokens). dominated by none?
 		{Variant: "c", Pass: 1.0, Tokens: 2000, DurationMS: 200}, // dominated by a
-		{Variant: "d", Pass: 1.0, Tokens: 800, DurationMS: 90},   // dominated by a? a: tokens 1000 > 800 鈫?a does NOT dominate d; d: tokens 800 < 1000, pass equal, dur 90 < 100 鈫?d dominates a!
+		{Variant: "d", Pass: 1.0, Tokens: 800, DurationMS: 90},   // dominated by a? a: tokens 1000 > 800 → a does NOT dominate d; d: tokens 800 < 1000, pass equal, dur 90 < 100 → d dominates a!
 	}
 	front := Front(points)
 	names := map[string]bool{}

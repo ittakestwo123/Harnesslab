@@ -162,6 +162,9 @@ func (s *Scheduler) runJob(ctx context.Context, job *Job) Outcome {
 	if job.Task.Verification.Strategy != "" || len(job.Task.Verification.Commands) > 0 {
 		spec2.Verification = job.Task.Verification
 	}
+	if job.Task.Success.IsSet() {
+		spec2.Success = job.Task.Success
+	}
 
 	h, err := builder.Build(ctx, &spec2, builder.Options{
 		HarnessDir:  s.opts.HarnessDir,

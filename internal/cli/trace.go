@@ -34,7 +34,7 @@ func openStore(harnessDir, driver string) (store.Store, error) {
 	}
 }
 
-// newTraceCmd renders the JSONL trace of a run (搂18 trace view).
+// newTraceCmd renders the JSONL trace of a run (§18 trace view).
 func newTraceCmd() *cobra.Command {
 	var harnessDir string
 	cmd := &cobra.Command{
