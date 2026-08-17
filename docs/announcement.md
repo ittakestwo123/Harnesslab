@@ -25,10 +25,15 @@
 5. **Ablation** — H0 基线 → planner → verification → retry → context → skills → full，逐个组件归因
 6. **Optimizer** — 失败分析 → LLM 生成候选 harness → dev 评估 → Pareto 选择 → **holdout REJECT 门**
 
-**证据**（真实运行）：
-- 40 次公开基准：39/40 PASS，总成本 USD 0.38
-- 离线重放：全轨迹从 store 回放，验证 PASS，workspace 变更重新落地
-- LLM Optimizer：候选 harness 比基线省 ~50% token（26k vs 54k），holdout 验证后推荐
+**证据**（真实运行，2026-08-17 完整 Benchmark v3）：
+- **Full Benchmark v3**：34 任务 × H0–H6 × 重复运行 = **539 次真实调用，USD 5.09**
+  - Dev（25×7×2）：H0–H6 成功率 92–94%
+  - Holdout（9×7×3）：89–100%；**验证 + 完整 harness 使 token 降 20–33%、成本降 33%**
+  - 关键发现：repo-map 上下文（H4）在 dev 最好（94%）但在 holdout 退步（89%、
+    +76% 延迟）—— 本任务集上不泛化（诚实的负面结论）
+  - 0 基础设施错误
+- 离线重放：全轨迹从 store 回放，验证 PASS，workspace 变更重新落地（16ms）
+- LLM Optimizer：候选 harness 比基线省 ~50% token，holdout 验证后推荐
 - 双运行时：同一管线跑 tRPC-Agent-Go 与 Codex CLI（runtime-agnostic）
 
 ## 各平台文案
