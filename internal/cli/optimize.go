@@ -135,6 +135,9 @@ func newOptimizeCmd() *cobra.Command {
 
 			switch {
 			case llmMode:
+				if err := checkNoHoldoutLeakage(tasksets, runs); err != nil {
+					return err
+				}
 				return runLLMGeneration(ctx, harnessDir, base, analysis, candidates)
 			case evaluate:
 				return runEvaluation(ctx, harnessDir, base, tasksDir, tasksets, parallel, maxTokens, timeout, repeat)
@@ -157,6 +160,28 @@ func newOptimizeCmd() *cobra.Command {
 	cmd.Flags().Int64Var(&maxTokens, "max-tokens", 0, "stop after this many cumulative tokens (0 = unlimited)")
 	cmd.Flags().DurationVar(&timeout, "timeout", 0, "overall benchmark timeout (0 = none)")
 	return cmd
+}
+
+// checkNoHoldoutLeakage enforces optimizer isolation: candidate generation
+// must only ever see dev-set results. If any analyzed run belongs to a
+// holdout task (per tasksets/holdout.yaml), generation is refused so holdout
+// stays a clean final-validation set.
+func checkNoHoldoutLeakage(tasksetsDir string, runs []*store.Run) error {
+	hold := filepath.Join(tasksetsDir, "holdout.yaml")
+	ts, err := benchmark.LoadTaskSet(hold)
+	if err != nil {
+		return fmt.Errorf("optimize: cannot verify holdout isolation (load %s: %w); pass --tasksets <dir> containing holdout.yaml", hold, err)
+	}
+	holdout := map[string]bool{}
+	for _, id := range ts.Tasks {
+		holdout[id] = true
+	}
+	for _, r := range runs {
+		if r != nil && holdout[r.Task] {
+			return fmt.Errorf("optimize: candidate generation must not see holdout data — run %q is holdout task %q; generate candidates from a dev-only report (bench --set dev)", r.ID, r.Task)
+		}
+	}
+	return nil
 }
 
 // runLLMGeneration writes LLM-generated candidates under .harness/candidates.
