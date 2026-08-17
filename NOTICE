@@ -1,0 +1,9 @@
+﻿HarnessLab
+Copyright 2026 HarnessLab contributors
+
+This product includes software developed as part of HarnessLab
+(https://github.com/ittakestwo123/Harnesslab).
+
+The underlying agent runtime is provided by tRPC-Agent-Go
+(https://github.com/trpc-group/trpc-agent-go), licensed under the
+Apache License 2.0.
