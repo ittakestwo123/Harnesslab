@@ -36,6 +36,11 @@ archives:
 checksum:
   name_template: "checksums.txt"
 
+release:
+  # Tags with a pre-release segment (*-alpha, *-beta, *-rc*) are published
+  # as GitHub pre-releases; stable tags (e.g. v0.3.0) are full releases.
+  prerelease: auto
+
 changelog:
   sort: asc
   filters:

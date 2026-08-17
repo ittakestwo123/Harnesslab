@@ -2,15 +2,13 @@
 
 **Build. Trace. Replay. Benchmark. Evolve.**
 
-An open-source Go platform for **AI agent harness engineering**, built on top of
-[tRPC-Agent-Go](https://github.com/trpc-group/trpc-agent-go).
+An open-source Go platform for **AI Agent Harness Engineering**.
 
 > **Same model. Same task. Same repository. Different harness.**
 >
-> HarnessLab makes the difference measurable: it turns the hard-coded parts of
-> a coding agent — prompt, context, planning, tools, verification, retry,
-> budget — into a configurable, observable, reproducible, comparable and
-> optimizable **harness**.
+> HarnessLab turns the hard-coded parts of a coding agent — prompt, context,
+> planning, tools, verification, retry, budget — into a configurable,
+> observable, reproducible, comparable and optimizable **harness**.
 
 [![CI](https://github.com/ittakestwo123/Harnesslab/actions/workflows/ci.yml/badge.svg)](https://github.com/ittakestwo123/Harnesslab/actions/workflows/ci.yml)
 [![Go](https://img.shields.io/badge/go-1.25-blue)](https://go.dev)
@@ -19,346 +17,124 @@ An open-source Go platform for **AI agent harness engineering**, built on top of
 
 ---
 
-## Demo (12 seconds)
+## Demo
 
 ![HarnessLab demo](docs/demo.gif)
 
-> Replay a coding-agent run without calling the model API.
+**Replay a coding-agent run without calling the model API.**
 
 ```text
-Live Agent Run      ~4s     (real DeepSeek model + tools)
-Offline Replay      16ms    (all model + tool calls served from the store)
-External Calls      0
-Verification        PASS    (recorded workspace changes re-applied)
+Live Run        ~4s     (real DeepSeek model + tools)
+Offline Replay  16ms    (all model + tool calls served from the store)
+External Calls  0
+Verification    PASS    (recorded workspace changes re-applied)
 ```
 
-## Installation
+## Why HarnessLab?
 
-**Option A — binary (no Go required):** download the latest release for your
-platform from the [Releases page](https://github.com/ittakestwo123/Harnesslab/releases)
-(`harnesslab-<version>-linux|darwin|windows-<arch>`), unpack and put `harness`
-on your `PATH`.
+Model quality gets all the attention, but the **harness** around the model —
+prompt, planning, context, tools, verification, retry, budget — decides how
+well the model performs in practice. HarnessLab makes harness changes
+**measurable**:
 
-**Option B — build from source (Go 1.25+):**
-
-```bash
-git clone https://github.com/ittakestwo123/Harnesslab.git
-cd Harnesslab
-go build -o harness ./cmd/harness
-./harness --version   # harness version 0.3.0-alpha
-```
-
-Then set your model key and go:
-
-```bash
-export DEEPSEEK_API_KEY=sk-...   # or OPENAI_API_KEY for provider: openai
-harness init                     # creates .harness/harness.yaml
-harness run "fix the failing parser tests" --repo https://github.com/octocat/Hello-World.git
-```
-
----
-
-## Demo 1 — Offline Replay
-
-Replay a coding-agent run **without calling the model API**:
-
-```text
-Live Agent Run      2.6s      (real DeepSeek model + exec_command tool)
-Offline Replay      16ms
-External Model Calls  0
-External Tool Calls   0
-Tokens              6498/167  (identical to the live run)
-```
-
-```bash
-harness run --repo https://github.com/octocat/Hello-World.git "list the files"
-harness replay <run-id>          # offline, no API key needed
-```
-
-## Demo 2 — Harness Diff
-
-Same model, same task, same repository — different harness:
-
-```text
-Run A (with shell tool)          Run B (without tools)
-Tokens in    6,498               38
-Tool Calls   3                   0
-Model Calls  4                   1
-
-First divergence at step 1:
-  A: model ... (then executes ls / dir / type README)
-  B: model ... <function_results>  ← hallucinated a file listing
-```
-
-```bash
-harness diff <run-a> <run-b>
-```
-
-## Demo 3 — Verified Benchmark
-
-With `success.require_workspace_change` and a real verification command, a
-harness that only "answers" can no longer fake a PASS:
-
-```text
-Harness                          Pass  Total Ver  Tokens     Chg   Time
-planning=none+tools_shell=false  0/2   2     0    294        0     2.2s
-planning=none+tools_shell=true   2/2   2     2    1,263,751  2     4m0.6s
-```
-
-The no-tools variant "passed" at 52 tokens in earlier demos by hallucinating;
-with verification enabled it correctly fails (no workspace change, no
-verification pass). The `Ver`/`Chg` columns separate a real PASS from a
-text-only answer.
-
-```bash
-harness bench ./tasks --matrix matrix.yaml --parallel 2
-harness optimize --report .harness/bench/bench-<id>.json
-```
-
----
-
-## What HarnessLab does
-
-HarnessLab is **not** another agent framework. It is a laboratory for the
-layer around the model — the **harness**:
-
-```text
-                     LLM
-                      │
-                      ▼
-           ┌─────────────────────┐
-           │       Harness       │   Context · Planning · Memory · Skills
-           │                     │   Tools · Retry · Verification · Sandbox
-           │                     │   Compaction · Policies · Budget
-           └──────────┬──────────┘
-                      ▼
-                  Repository
-```
-
-It records the full agent trajectory and makes it:
-
-- **Replayable** — offline replay from recorded tool/model results
-- **Comparable** — trajectory diff with first-divergence detection
-- **Benchmarkable** — task x harness-variant matrices on a worker pool
-- **Reproducible** — `.harness` bundles (spec + trace + replay store + env)
-- **Optimizable** — failure-pattern analysis and Pareto fronts
-- **Verifiable** — `success.require_verification_pass` + `success.require_workspace_change`
-  stop text-only hallucinated answers from faking a PASS
-- **Sandboxable** — agent shell commands and verification run through a
-  configurable sandbox (`none` / `process` / `docker` / `bwrap`) with env
-  scrubbing, timeouts, and command allow/deny policies
-
-## Runtimes
-
-HarnessLab core is runtime-agnostic behind the `hlruntime.Runtime` interface —
-the same workspace, trace, verification, cost and benchmark pipeline runs on
-every adapter. Two are built in:
-
-- `runtime.type: trpc` (default) — the **tRPC-Agent-Go runtime**: full agent
-  loop with framework tools, planning, skills and offline replay.
-- `runtime.type: codex` — the **Codex CLI runtime**: drives a locally
-  installed `codex` binary via `codex exec --json` (prompt on stdin, its
-  JSONL event stream parsed into the same `HarnessEvent` dialect). The
-  harness instruction is prepended to the prompt (codex has no separate
-  system channel); codex brings its own tools and sandbox:
-
-```yaml
-runtime:
-  type: codex
-  codex:
-    binary: codex                 # default; or an absolute path
-    model: gpt-5.1-codex          # optional --model override
-    sandbox: workspace-write      # read-only | workspace-write | danger-full-access
-    ask_for_approval: never       # never | on-request | on-failure
-    env:
-      - CODEX_HOME=/path/to/codex-home   # optional isolated codex config
-```
-
-With two runtimes behind one interface, HarnessLab is a **Universal Agent
-Harness Engineering Platform**, not a tRPC-Agent-Go tool. Offline replay is a
-trpc-runtime feature; codex runs are fully traced but not offline-replayable
-(the CLI is the runtime).
-
-## LLM Harness Optimizer
-
-The optimizer turns benchmark results into better harnesses. The loop follows
-the roadmap's dev → select → holdout discipline:
-
-```text
-Current Harness ──► Dev Benchmark ──► Failure Analyzer ──► LLM Candidate Generator
-                                                              │
-                                                    ┌─────────┼─────────┐
-                                                    ▼         ▼         ▼
-                                               candidate-001..003 (yaml + metadata)
-                                                              │
-                                                              ▼
-                                                   Dev Benchmark (candidates)
-                                                              │
-                                                              ▼
-                                                       Pareto Selection
-                                                              │
-                                                              ▼
-                                                    Holdout Validation
-                                                              │
-                                                     Dev-only win? ──► REJECT
-                                                              │
-                                                              ▼
-                                                       Recommended Harness
-```
-
-```bash
-# 1. Generate candidates from the failure analysis (needs DEEPSEEK_API_KEY /
-#    OPENAI_API_KEY for the model named in your harness)
-harness optimize --llm --candidates 3 \
-  --report .harness/bench/bench-<id>.json \
-  --config benchmarks/harness.yaml --harness-dir .harness
-
-# 2. Evaluate: dev bench -> Pareto -> holdout gate -> recommendation
-harness optimize --evaluate \
-  --config benchmarks/harness.yaml --harness-dir .harness \
-  --tasks benchmarks/tasks --tasksets benchmarks/tasksets \
-  --repeat 1 --parallel 2
-```
-
-- Candidates are full `harnesslab/v1` specs written to
-  `.harness/candidates/candidate-XXX.yaml` — **never** over your `harness.yaml`.
-- Each candidate carries `metadata` (parent, reason, expected_effect) so the
-  result of every change is auditable.
-- A candidate that improves the dev set but regresses the holdout set is
-  **REJECTED** (a Dev-only win is not trustworthy); only candidates that hold
-  on holdout are recommended.
-
-## Sandbox
-
-```yaml
-sandbox:
-  type: process        # none | process | docker | bwrap
-  timeout: 30s         # per-command timeout (process backend)
-  denied_commands:     # process backend: reject commands containing these
-    - "rm -rf"
-    - "format c:"
-  # allowed_commands:  # process backend: restrict to this prefix allowlist
-  #   - go
-  #   - echo
-```
-
-- `none` — direct host execution (default)
-- `process` — cwd isolation, **secret env scrubbing** (API keys/tokens are not
-  visible to sandboxed commands), per-command timeouts, allow/deny lists
-- `docker` — commands run inside a container with the workspace mounted at
-  `/workspace` (`sandbox.image`, network policy)
-- `bwrap` — bubblewrap sandbox on Linux (workspace rw, system dirs ro,
-  network disabled unless allowed)
-
-When a non-`none` sandbox is configured, the agent's `exec_command` tool and
-the verification commands both route through it.
-
-## Costs
-
-```yaml
-pricing:
-  deepseek:
-    deepseek-chat:
-      input_per_million: 0.27
-      output_per_million: 1.10
-  openai:
-    "*":
-      input_per_million: 1.25
-      output_per_million: 10.0
-```
-
-When `pricing` is set, every run's `CostUSD` is computed from its token usage
-and shown in reports (`$0.0016`–`$0.033` for the benchmark demo runs).
-
-## Reproducibility & environment validation
-
-`harness reproduce <run-id | bundle.harness> [--env-mode warn|strict|ignore]`
-compares the recorded toolchain environment (OS, arch, Go, git, HarnessLab,
-tRPC-Agent-Go versions) against the current one:
-
-```text
-Environment check:
-  OS             MATCH    recorded="windows" current="windows"
-  Go             MISMATCH recorded="go1.23.0" current="go1.26.5"
-  ...
-environment drift detected (1 mismatches)
-```
-
-`strict` aborts the reproduction on any mismatch; `warn` (default) continues.
-
-## Public benchmark
-
-`benchmarks/` contains a reproducible coding-agent benchmark: **34 tasks in 8
-categories** (basic, debugging, multi-file, refactor, testing, concurrency,
-context-heavy, tool-heavy) against the seeded `bench/tasks-v2` commit
-`075550a` of this repository (4 real code regressions caught by failing tests,
-2 typos, 2 add-a-test, 2 add-a-feature), a base harness with DeepSeek pricing,
-a 2×2 variant matrix and a 7-harness **ablation matrix** (H0 baseline →
-planner → verification → retry → repo-map context → skills → full). Tasks are
-partitioned into `dev` (25) / `holdout` (9) sets, and `harness bench --repeat N`
-produces statistically reportable repetitions (mean / median / stddev / P50 /
-P90 / 95% CI per variant).
-
-```bash
-harness bench benchmarks/tasks --config benchmarks/harness.yaml --matrix benchmarks/matrix.yaml
-harness bench benchmarks/tasks --config benchmarks/harness.yaml --matrix benchmarks/matrices/harness-ablation.yaml --set dev --repeat 2
-```
-
-Latest 40-run result (2026-08-16, DeepSeek `deepseek-chat`):
-**39/40 passes, USD 0.38 total** — see
-[benchmarks/results/README.md](benchmarks/results/README.md).
-
-See [benchmarks/README.md](benchmarks/README.md).
-
-## Status
-
-`v0.2.0-alpha` — the full loop **Build → Trace → Replay → Diff → Benchmark
-→ Reproduce → Optimize** is implemented and verified end-to-end with a real
-DeepSeek model, with sandboxed execution, cost accounting, environment
-validation and a public 10-task benchmark. See [CHANGELOG.md](CHANGELOG.md)
-and the runnable demos in [docs/demo.md](docs/demo.md).
+- **Replay** — re-run any recorded agent run offline in milliseconds, no API
+  key, no cost ([docs/replay.md](docs/replay.md))
+- **Diff** — same task, two harnesses: aligned trajectory + first divergence
+- **Benchmark** — 34 real tasks × 8 categories × dev/holdout × repeated runs,
+  with per-variant statistics and confidence intervals
+  ([docs/benchmark.md](docs/benchmark.md))
+- **Optimize** — failure analysis → LLM-generated harness candidates → dev
+  evaluation → Pareto selection → holdout validation with a reject gate
+  ([docs/optimizer.md](docs/optimizer.md))
+- **Reproduce** — `.harness` bundles + environment fingerprint validation
+  ([docs/reproducibility.md](docs/reproducibility.md))
 
 ## Quick start
 
 ```bash
-# 1. Build
-go build ./cmd/harness
+# 1. Install: download a binary from Releases, or
+go build -o harness ./cmd/harness
 
 # 2. Configure your LLM
-export OPENAI_API_KEY=sk-...        # OpenAI-compatible
-export DEEPSEEK_API_KEY=sk-...      # or DeepSeek (spec: provider: deepseek)
+export DEEPSEEK_API_KEY=sk-...        # or OPENAI_API_KEY (provider: openai)
 
-# 3. Initialize a harness
-harness init
-# -> .harness/harness.yaml  (edit it: model, tools, verification commands...)
-
-# 4. Run a task against a repository
-harness run --repo https://github.com/example/project "fix the failing parser tests"
+# 3. Initialize a harness and run a task
+harness init                          # creates .harness/harness.yaml
+harness run "fix the failing parser tests" --repo https://github.com/octocat/Hello-World.git
 ```
 
-Example output:
+A few commands into the workflow:
 
+```bash
+harness runs                          # list recorded runs
+harness trace <run-id>                # render the trajectory
+harness replay <run-id>               # offline replay (free, no API)
+harness diff <run-a> <run-b>          # compare two runs
+harness bench benchmarks/tasks --config benchmarks/harness.yaml --matrix benchmarks/matrices/harness-ablation.yaml
 ```
-Run: run-8f3a2b1c
-Model       gpt-5 (openai)
-Harness     golang-coding-default
-Workspace   .harness/workspaces/worktrees/run-8f3a2b1c
 
-01:53:26  RUN START
-01:53:28  MODEL gpt-5
-01:53:31  TOOL exec_command {"cmd":"go test ./..."}
-01:53:33  TOOL exec_command done
-01:53:35  MODEL gpt-5 tokens 3812 -> 884
-01:53:36  RUN END
+## Features
 
-Status      passed
-Tokens      3,812 in / 884 out
-Tool Calls  1
-Model Calls 2
-Duration    10.2s
-Trace:
-.harness/traces/run-8f3a2b1c.jsonl
+- **HarnessSpec** — `harness.yaml`: planning, context (repo-map), skills,
+  tools, verification, retry, sandbox, budget, pricing
+- **Runtimes** — tRPC-Agent-Go (default) and Codex CLI behind one
+  runtime-agnostic interface ([docs/runtimes.md](docs/runtimes.md))
+- **Trace / Replay / Diff** — full trajectory recording, offline replay,
+  trajectory comparison ([docs/replay.md](docs/replay.md))
+- **Benchmark v3** — 34 tasks, 8 categories, dev/holdout, `--repeat N`,
+  statistical reports, H0–H6 harness ablation
+  ([docs/benchmark.md](docs/benchmark.md))
+- **Sandbox** — `none` / `process` / `docker` / `bwrap` for agent commands and
+  verification ([docs/sandbox.md](docs/sandbox.md))
+- **Cost & budget** — per-run `CostUSD` from a pricing table; token/cost/time
+  budgets per run
+- **Reproduce** — snapshot / export / reproduce with environment validation
+  ([docs/reproducibility.md](docs/reproducibility.md))
+- **LLM Harness Optimizer** — dev → Pareto → holdout loop with a
+  Dev-only-win REJECT gate ([docs/optimizer.md](docs/optimizer.md))
+
+## Public benchmark
+
+**34 real coding tasks in 8 categories** against the seeded
+`bench/tasks-v2` commit `075550a` (4 intentional regressions caught by failing
+tests + 2 doc typos), dev 25 / holdout 9, H0–H6 ablation, repeated runs and
+statistical reporting. Every PASS comes from real verification —
+**hallucination != pass**.
+
+```bash
+harness bench benchmarks/tasks --config benchmarks/harness.yaml --matrix benchmarks/matrices/harness-ablation.yaml --set dev --repeat 2
 ```
+
+See [benchmarks/README.md](benchmarks/README.md) and
+[docs/benchmark.md](docs/benchmark.md).
+
+> **Previous benchmark (v0.2, historical):** 10 tasks × 4 variants = 40 runs,
+> 39/40 passes, USD 0.38 total (2026-08-16) —
+> [benchmarks/results/README.md](benchmarks/results/README.md).
+
+## Status
+
+Current release: **v0.3.1-alpha** (previous: v0.3.0-alpha).
+
+HarnessLab currently includes:
+
+- tRPC-Agent-Go runtime
+- Codex CLI runtime
+- Offline model/tool replay
+- Trajectory diff
+- 34-task Benchmark v3
+- 8 benchmark categories
+- Dev / holdout task split
+- Repeated benchmark runs
+- Statistical reporting
+- Harness H0–H6 ablation
+- Git worktree isolation
+- Process / Docker / bwrap sandbox
+- Model cost accounting
+- Reproducibility bundles
+- Environment validation
+- LLM harness candidate generation
+- Dev → Pareto → Holdout optimizer pipeline
 
 ## CLI reference
 
@@ -374,32 +150,26 @@ Trace:
 | `harness snapshot` | Write `.harness/harness.lock` for the current harness |
 | `harness export <run-id>` | Export a reproducible `.harness` bundle |
 | `harness reproduce <run-id\|bundle>` | Re-run offline from recorded spec + replay store |
-| `harness optimize` | Failure analysis, **LLM candidate generation (`--llm`)**, dev/Pareto/holdout evaluation (`--evaluate`) |
+| `harness optimize` | Failure analysis, LLM candidate generation (`--llm`), dev/Pareto/holdout evaluation (`--evaluate`) |
 
-## Architecture
+## Documentation
 
-```text
-HarnessSpec (harness.yaml)
-    → Harness Builder        (workspace + runtime + recorder + store)
-    → Runtime Interface      (runtime-agnostic)
-    → TRPC Runtime Adapter   (tRPC-Agent-Go runner, event normalization,
-                              model wrapper + tool callbacks for replay)
-    → HarnessEvent stream
-    → Trace (JSONL) / Run Store (JSON|SQLite) / Replay Store
-    → Diff / Benchmark / Reproduce / Optimize
-```
+- [Architecture](docs/architecture.md)
+- [Benchmark](docs/benchmark.md)
+- [Offline replay](docs/replay.md)
+- [Runtimes](docs/runtimes.md)
+- [Sandbox](docs/sandbox.md)
+- [Reproducibility](docs/reproducibility.md)
+- [LLM Harness Optimizer](docs/optimizer.md)
+- [Runnable demos](docs/demo.md)
+- [Community launch materials](docs/announcement.md)
 
-## Development notes
+## Contributing
 
-- Verification commands run in the workspace root when `--repo` is given,
-  otherwise in the current directory.
-- The shell tool group uses the framework's host-exec toolset when no sandbox
-  is configured; with a non-`none` sandbox it uses a sandbox-routed
-  `exec_command` tool instead.
-- Replay hashes are computed over the full model request (messages + tool
-  declarations + config); runs must be replayed with the same harness spec.
-- See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.
+See [CONTRIBUTING.md](CONTRIBUTING.md). Bug reports and feature requests go
+through the [issue templates](.github/ISSUE_TEMPLATE/); code changes through
+pull requests with the checklist in [PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md).
 
 ## License
 
-Apache-2.0. See [LICENSE](LICENSE).
+Apache-2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
