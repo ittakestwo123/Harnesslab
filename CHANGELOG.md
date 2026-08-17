@@ -5,6 +5,37 @@ All notable changes to HarnessLab are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.3.1-alpha] - 2026-08-17
+
+Release polish: GitHub metadata, license detection, README consistency,
+pre-release semantics, full Benchmark v3 and community launch materials.
+
+### Added
+
+- **Full Benchmark v3** (`benchmarks/results/benchmark-v3-full.md`): the
+  complete 34-task taskset (8 categories) × H0–H6 ablation × repeated runs
+  (dev ×2, holdout ×3) — **539 real runs, USD 5.09, 16.9M input tokens**,
+  with statistical reporting and raw JSON preserved
+  (`benchmarks/results/benchmark-v3-full/*.json`)
+- **Docs split**: README is now a slim landing page; detailed guides moved to
+  `docs/` (architecture, benchmark, replay, runtimes, sandbox,
+  reproducibility, optimizer)
+- **NOTICE** file with the copyright/attribution statement
+
+### Changed
+
+- **License detection**: `LICENSE` now contains only the standard Apache-2.0
+  text (the project header prevented GitHub from detecting the license)
+- **README**: version status unified to v0.3.x; the v0.2 40-run result is
+  explicitly marked as historical
+- **GitHub metadata**: repository description and topics set
+- **Pre-release semantics**: `*-alpha` tags publish as GitHub pre-releases
+  (`.goreleaser.yaml` `release.prerelease: auto`); the existing v0.3.0-alpha
+  release was re-marked as a pre-release
+- **Optimizer isolation**: `harness optimize --llm` refuses candidate
+  generation from any benchmark containing holdout-set tasks (no holdout
+  leakage into the optimizer)
+
 ## [Unreleased]
 
 ### Added
